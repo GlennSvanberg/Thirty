@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -15,10 +16,14 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private ImageButton mDie0, mDie1, mDie2, mDie3, mDie4, mDie5;
+    private Button mRollButton;
+    private TextView mRoundTextView;
 
     private Die[] mDies;
+    private int[] mScore;
+    private int mRolls;
 
-    private Button mRollButton;
+
 
 
     @Override
@@ -41,21 +46,32 @@ public class MainActivity extends AppCompatActivity {
                 new Die(mDie4.getId()),
                 new Die(mDie5.getId())
         };
-        newRound();
+
 
         mRollButton = findViewById(R.id.rollButton);
         mRollButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                for(Die die : mDies) {
-                    if(die.isActive()) {
-                        die.roll();
-                        setDieImage(die);
+                //Roll dies
+                mRolls++;
+                if(mRolls <= 3) {
+                    for(Die die : mDies) {
+                        if(die.isActive()) {
+                            die.roll();
+                            setDieImage(die);
+                        }
                     }
+                    setRoundTextViewText();
+                } else {
+                    Log.d(TAG, "time to make a cjhoice");
+                    //Deactivate button
+
                 }
+
             }
         });
-
+        mRoundTextView = findViewById(R.id.roundTextView);
+        newRound();
 
     }
 
@@ -77,12 +93,16 @@ public class MainActivity extends AppCompatActivity {
     }
     private void newRound() {
         for (Die die : mDies) {
+            mRolls = 1;
             die.roll();
             setDieImage(die);
             Log.d(TAG, String.valueOf(die.getDieValue()));
         }
+        setRoundTextViewText();
     }
-
+    private void setRoundTextViewText() {
+        mRoundTextView.setText("Rolls: " + mRolls + " / 3");
+    }
     private void setDieImage(Die die) {
         ImageButton button = findViewById(die.getDieId());
         if(die.isActive()) {
