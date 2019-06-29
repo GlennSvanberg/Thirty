@@ -5,8 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,10 +21,12 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mDie0, mDie1, mDie2, mDie3, mDie4, mDie5;
     private Button mRollButton;
     private TextView mRoundTextView;
+    private Spinner mOptionsSpinner;
 
     private Die[] mDies;
     private int[] mScore;
     private int mRolls;
+    private String[] mOptionsList;
 
 
 
@@ -71,6 +76,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         mRoundTextView = findViewById(R.id.roundTextView);
+
+        mOptionsList = new String[]{
+                "LOW", "4", "5", "6", "7", "8", "9", "10", "11", "12"
+        };
+        mOptionsSpinner = findViewById(R.id.optionsSpinner);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mOptionsList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mOptionsSpinner.setAdapter(dataAdapter);
+
+        mOptionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.d(TAG, view.toString());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         newRound();
 
     }
