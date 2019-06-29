@@ -24,9 +24,9 @@ public class MainActivity extends AppCompatActivity {
     private Spinner mOptionsSpinner;
 
     private Die[] mDies;
+    private Option[] mOptions;
     private int[] mScore;
     private int mRolls;
-    private String[] mOptionsList;
 
 
 
@@ -50,6 +50,19 @@ public class MainActivity extends AppCompatActivity {
                 new Die(mDie3.getId()),
                 new Die(mDie4.getId()),
                 new Die(mDie5.getId())
+        };
+
+        mOptions = new Option[] {
+                new Option("LOW"),
+                new Option("4"),
+                new Option("5"),
+                new Option("6"),
+                new Option("7"),
+                new Option("8"),
+                new Option("9"),
+                new Option("10"),
+                new Option("11"),
+                new Option("12")
         };
 
 
@@ -77,18 +90,16 @@ public class MainActivity extends AppCompatActivity {
         });
         mRoundTextView = findViewById(R.id.roundTextView);
 
-        mOptionsList = new String[]{
-                "LOW", "4", "5", "6", "7", "8", "9", "10", "11", "12"
-        };
+
         mOptionsSpinner = findViewById(R.id.optionsSpinner);
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mOptionsList);
+        ArrayAdapter<Option> dataAdapter = new ArrayAdapter<Option>(this, android.R.layout.simple_spinner_item, mOptions);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mOptionsSpinner.setAdapter(dataAdapter);
 
         mOptionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d(TAG, view.toString());
+                Log.d(TAG, String.valueOf(mOptions[i]));
             }
 
             @Override
