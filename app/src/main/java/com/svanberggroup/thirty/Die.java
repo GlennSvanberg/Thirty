@@ -8,9 +8,11 @@ public class Die {
 
     private int mDieValue;
     private int mDieId;
+    private boolean mIsActive;
 
     public Die(int dieId) {
         mDieId = dieId;
+        mIsActive = true;
     }
 
     public int getDieValue() {
@@ -25,6 +27,13 @@ public class Die {
         return mDieId;
     }
 
+    public boolean isActive() {
+        return mIsActive;
+    }
+
+    public void setActive(boolean active) {
+        mIsActive = active;
+    }
 
     public void roll() {
         Random rand = new Random();

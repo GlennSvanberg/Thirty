@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
@@ -42,32 +43,38 @@ public class MainActivity extends AppCompatActivity {
         };
         newRound();
 
+        mRollButton = findViewById(R.id.rollButton);
+        mRollButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                for(Die die : mDies) {
+                    if(die.isActive()) {
+                        die.roll();
+                        setDieImage(die);
+                    }
+                }
+            }
+        });
+
 
     }
-    private void setDieImage(Die die) {
-        ImageButton button = findViewById(die.getDieId());
-        switch(die.getDieValue()) {
-            case 1:
-                button.setImageResource(R.drawable.white1);
-                break;
-            case 2:
-                button.setImageResource(R.drawable.white2);
-                break;
-            case 3:
-                button.setImageResource(R.drawable.white3);
-                break;
-            case 4:
-                button.setImageResource(R.drawable.white4);
-                break;
-            case 5:
-                button.setImageResource(R.drawable.white5);
-                break;
-            case 6:
-                button.setImageResource(R.drawable.white6);
-                break;
+
+    public void dieClick(View view) {
+        // Find the Die that has been clicked
+        for (Die die : mDies) {
+            if(die.getDieId() == view.getId()) {
+
+                //Is the die active?
+                if(die.isActive()) {
+                    die.setActive(false);
+                } else {
+                    die.setActive(true);
+                }
+                setDieImage(die);
+            }
         }
-    }
 
+    }
     private void newRound() {
         for (Die die : mDies) {
             die.roll();
@@ -75,4 +82,55 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, String.valueOf(die.getDieValue()));
         }
     }
+
+    private void setDieImage(Die die) {
+        ImageButton button = findViewById(die.getDieId());
+        if(die.isActive()) {
+            //set white image
+            switch(die.getDieValue()) {
+                case 1:
+                    button.setImageResource(R.drawable.white1);
+                    break;
+                case 2:
+                    button.setImageResource(R.drawable.white2);
+                    break;
+                case 3:
+                    button.setImageResource(R.drawable.white3);
+                    break;
+                case 4:
+                    button.setImageResource(R.drawable.white4);
+                    break;
+                case 5:
+                    button.setImageResource(R.drawable.white5);
+                    break;
+                case 6:
+                    button.setImageResource(R.drawable.white6);
+                    break;
+            }
+        } else {
+            //set grey image
+            switch(die.getDieValue()) {
+                case 1:
+                    button.setImageResource(R.drawable.grey1);
+                    break;
+                case 2:
+                    button.setImageResource(R.drawable.grey2);
+                    break;
+                case 3:
+                    button.setImageResource(R.drawable.grey3);
+                    break;
+                case 4:
+                    button.setImageResource(R.drawable.grey4);
+                    break;
+                case 5:
+                    button.setImageResource(R.drawable.grey5);
+                    break;
+                case 6:
+                    button.setImageResource(R.drawable.grey6);
+                    break;
+            }
+        }
+    }
+
+
 }

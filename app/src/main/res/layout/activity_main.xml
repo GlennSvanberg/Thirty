@@ -15,7 +15,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/white1"
-        android:background="@null"/>
+        android:background="@null"
+        android:onClick="dieClick"/>
 
     <ImageButton
         android:id="@+id/die1"
@@ -28,7 +29,8 @@
         app:layout_constraintEnd_toStartOf="@+id/die2"
         app:layout_constraintStart_toEndOf="@+id/die0"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/white1" />
+        app:srcCompat="@drawable/white1"
+        android:onClick="dieClick"/>
 
     <ImageButton
         android:id="@+id/die2"
@@ -39,7 +41,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/white1"
-        android:background="@null"/>
+        android:background="@null"
+        android:onClick="dieClick"/>
 
     <ImageButton
         android:id="@+id/die3"
@@ -50,7 +53,8 @@
         android:background="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/die0"
-        app:srcCompat="@drawable/white1" />
+        app:srcCompat="@drawable/white1"
+        android:onClick="dieClick"/>
 
     <ImageButton
         android:id="@+id/die4"
@@ -63,7 +67,8 @@
         app:layout_constraintEnd_toStartOf="@+id/die5"
         app:layout_constraintStart_toEndOf="@+id/die3"
         app:layout_constraintTop_toBottomOf="@+id/die1"
-        app:srcCompat="@drawable/white1" />
+        app:srcCompat="@drawable/white1"
+        android:onClick="dieClick"/>
 
     <ImageButton
         android:id="@+id/die5"
@@ -74,7 +79,8 @@
         android:background="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/die2"
-        app:srcCompat="@drawable/white1" />
+        app:srcCompat="@drawable/white1"
+        android:onClick="dieClick"/>
 
     <Button
         android:id="@+id/rollButton"
