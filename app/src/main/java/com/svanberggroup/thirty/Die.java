@@ -4,15 +4,21 @@ import java.util.Random;
 
 public class Die {
 
-
-
     private int mDieValue;
     private int mDieId;
     private boolean mIsActive;
+    private boolean mCounted;
 
     public Die(int dieId) {
         mDieId = dieId;
         mIsActive = true;
+    }
+    public boolean isCounted() {
+        return mCounted;
+    }
+
+    public void setCounted(boolean counted) {
+        mCounted = counted;
     }
 
     public int getDieValue() {
