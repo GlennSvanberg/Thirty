@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Die[] mDice;
     private Option[] mOptions;
+    private ArrayList<Option> mAvalibleOptions;
     private int mOptionNr;
     private int mRolls;
 
@@ -66,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
         };
 
 
+
+
+
         mRollButton = findViewById(R.id.rollButton);
         mRollButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,8 +93,9 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "time to make a choice");
                     // Deactivate button if no valid choice
                     calculatePoints();
+                    //
                     newRound();
-                    // Calculate points
+
 
                 }
 
@@ -98,22 +103,23 @@ public class MainActivity extends AppCompatActivity {
         });
         mRoundTextView = findViewById(R.id.roundTextView);
 
+        setAvalibleOptions();
 
-        mOptionsSpinner = findViewById(R.id.optionsSpinner);
-        ArrayAdapter<Option> dataAdapter = new ArrayAdapter<Option>(this, android.R.layout.simple_spinner_item, mOptions);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mOptionsSpinner.setAdapter(dataAdapter);
 
         mOptionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mOptionNr = i;
+                for (int j = 0; j < mOptions.length; j++) {
+                    if(mAvalibleOptions.get(i).getName() == mOptions[j].getName()) {
+                        mOptionNr = j;
+                    }
+                }
+
                 Log.d(TAG, "Option: " + String.valueOf(mOptions[i]));
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
             }
         });
 
@@ -137,40 +143,58 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    private void newRound() {
+        for (Die die : mDice) {
+            mRolls = 1;
+            die.roll();
+            die.setActive(true);
+            setDieImage(die);
+            setAvalibleOptions();
+        }
+        mRollButton.setText("ROLL");
+        setRoundTextViewText();
+    }
+
+    private void setAvalibleOptions(){
+        mAvalibleOptions = new ArrayList<Option>();
+        for(Option o : mOptions) {
+            if(o.isAvalible()) {
+                mAvalibleOptions.add(o);
+            }
+        }
+        mOptionsSpinner = findViewById(R.id.optionsSpinner);
+        ArrayAdapter<Option> dataAdapter = new ArrayAdapter<Option>(this, android.R.layout.simple_spinner_item, mAvalibleOptions);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mOptionsSpinner.setAdapter(dataAdapter);
+    }
+
+    private void setRoundTextViewText() {
+        mRoundTextView.setText("Rolls: " + mRolls + " / 3");
+    }
 
     private void calculatePoints() {
-        Log.d(TAG, "Calculating points");
-        ArrayList<Integer> values = new ArrayList<Integer>();
         int sum = 0;
         int targetValue = mOptions[mOptionNr].getSum();
 
-        //Get values to list
-        int[] A = new int[6];
         for(int i = 0;  mDice.length > i; i++) {
+            // Reset dices count
             mDice[i].setCounted(false);
-            Log.d(TAG, "i: " + i + " die: " + mDice[i].getDieValue());
-            values.add(mDice[i].getDieValue());
-            A[i] = mDice[i].getDieValue();
-
         }
 
         // Calculate LOW
         if(mOptionNr == 0) {
-            for(int i : values) {
-                if(i <= 3) {
+            for(int i =0; i < mDice.length; i++) {
+                if(mDice[i].getValue() <= 3) {
                     sum += i;
                 }
             }
-            Log.d(TAG, "Low Sum: " + sum);
-
         } else {
 
             //Check one die
             for (int i = 0; i < mDice.length; i++) {
-                if (mDice[i].getDieValue() == targetValue) {
-                    Log.d(TAG, "Match 1 i: " + mDice[i].getDieValue());
+                if (mDice[i].getValue() == targetValue) {
                     mDice[i].setCounted(true);
-                    sum = sum + mDice[i].getDieValue();
+                    sum = sum + mDice[i].getValue();
                 }
             }
             // Check 2 dice
@@ -179,11 +203,10 @@ public class MainActivity extends AppCompatActivity {
                     //check counted
                     if (!mDice[i].isCounted() && !mDice[j].isCounted()) {
                         //compare
-                        if (mDice[i].getDieValue() + mDice[j].getDieValue() == targetValue) {
-                            Log.d(TAG, "Match 2 i: " + mDice[i].getDieValue() + " j: " + mDice[j].getDieValue());
+                        if (mDice[i].getValue() + mDice[j].getValue() == targetValue) {
                             mDice[i].setCounted(true);
                             mDice[j].setCounted(true);
-                            sum = sum + mDice[i].getDieValue() + mDice[j].getDieValue();
+                            sum = sum + mDice[i].getValue() + mDice[j].getValue();
                         }
                     }
                 }
@@ -193,16 +216,14 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < mDice.length; i++) {
                 for (int j = i + 1; j < mDice.length; j++) {
                     for (int k = j + 1; k < mDice.length; k++) {
-
                         // check counted
                         if (!mDice[i].isCounted() && !mDice[j].isCounted() && !mDice[k].isCounted()) {
                             // Compare
-                            if (mDice[i].getDieValue() + mDice[j].getDieValue() + mDice[k].getDieValue() == targetValue) {
-                                Log.d(TAG, "Match 3 i: " + mDice[i].getDieValue() + " j: " + mDice[j].getDieValue() + " k: " + mDice[k].getDieValue());
+                            if (mDice[i].getValue() + mDice[j].getValue() + mDice[k].getValue() == targetValue) {
                                 mDice[i].setCounted(true);
                                 mDice[j].setCounted(true);
                                 mDice[k].setCounted(true);
-                                sum = sum + mDice[i].getDieValue() + mDice[j].getDieValue() + mDice[k].getDieValue();
+                                sum = sum + mDice[i].getValue() + mDice[j].getValue() + mDice[k].getValue();
                             }
                         }
                     }
@@ -216,13 +237,12 @@ public class MainActivity extends AppCompatActivity {
                             // check counted
                             if (!mDice[i].isCounted() && !mDice[j].isCounted() && !mDice[k].isCounted() && !mDice[l].isCounted()) {
                                 //Compare
-                                if (mDice[i].getDieValue() + mDice[j].getDieValue() + mDice[k].getDieValue() + mDice[l].getDieValue() == targetValue) {
-                                    Log.d(TAG, "Match 4 i: " + mDice[i].getDieValue() + " j: " + mDice[j].getDieValue() + " k: " + mDice[k].getDieValue() + " l: " + mDice[l].getDieValue());
+                                if (mDice[i].getValue() + mDice[j].getValue() + mDice[k].getValue() + mDice[l].getValue() == targetValue) {
                                     mDice[i].setCounted(true);
                                     mDice[j].setCounted(true);
                                     mDice[k].setCounted(true);
                                     mDice[l].setCounted(true);
-                                    sum = sum + mDice[i].getDieValue() + mDice[j].getDieValue() + mDice[k].getDieValue() + mDice[l].getDieValue();
+                                    sum = sum + mDice[i].getValue() + mDice[j].getValue() + mDice[k].getValue() + mDice[l].getValue();
                                 }
                             }
                         }
@@ -239,14 +259,13 @@ public class MainActivity extends AppCompatActivity {
                                 // Check counted
                                 if (!mDice[i].isCounted() && !mDice[j].isCounted() && !mDice[k].isCounted() && !mDice[l].isCounted() && !mDice[m].isCounted()) {
                                     // Compare
-                                    if (mDice[i].getDieValue() + mDice[j].getDieValue() + mDice[k].getDieValue() + mDice[l].getDieValue() + mDice[m].getDieValue() == targetValue) {
-                                        Log.d(TAG, "Match 5 i: " + mDice[i].getDieValue() + " j: " + mDice[j].getDieValue() + " k: " + mDice[k].getDieValue() + " l: " + mDice[l].getDieValue() + " m: " + +mDice[m].getDieValue());
+                                    if (mDice[i].getValue() + mDice[j].getValue() + mDice[k].getValue() + mDice[l].getValue() + mDice[m].getValue() == targetValue) {
                                         mDice[i].setCounted(true);
                                         mDice[j].setCounted(true);
                                         mDice[k].setCounted(true);
                                         mDice[l].setCounted(true);
                                         mDice[m].setCounted(true);
-                                        sum = sum + mDice[i].getDieValue() + mDice[j].getDieValue() + mDice[k].getDieValue() + mDice[l].getDieValue() + mDice[m].getDieValue();
+                                        sum = sum + mDice[i].getValue() + mDice[j].getValue() + mDice[k].getValue() + mDice[l].getValue() + mDice[m].getValue();
                                     }
                                 }
 
@@ -255,11 +274,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-            // check all dice
+            // Check 6 dice
             int t = 0;
             for (int i = 0; i < mDice.length; i++) {
                 if (!mDice[i].isCounted()) {
-                    t = t + mDice[i].getDieValue();
+                    t = t + mDice[i].getValue();
                 }
             }
             if (t == targetValue) {
@@ -268,35 +287,23 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+            // Set option not avalible
+            mOptions[mOptionNr].setAvalible(false);
+
             Log.d(TAG, "Sum: " + sum);
+            // Display result
             Toast toast = Toast.makeText(this, "Option " + targetValue + " gave you " + sum + " points! ", Toast.LENGTH_SHORT);
             toast.show();
+
+            // Store sum in option
+            mOptions[mOptionNr].setSum(sum);
         }
 
-
-
-
-
-
-
-    private void newRound() {
-        for (Die die : mDice) {
-            mRolls = 1;
-            die.roll();
-            die.setActive(true);
-            setDieImage(die);
-        }
-        mRollButton.setText("ROLL");
-        setRoundTextViewText();
-    }
-    private void setRoundTextViewText() {
-        mRoundTextView.setText("Rolls: " + mRolls + " / 3");
-    }
     private void setDieImage(Die die) {
         ImageButton button = findViewById(die.getDieId());
         if(die.isActive()) {
             //set white image
-            switch(die.getDieValue()) {
+            switch(die.getValue()) {
                 case 1:
                     button.setImageResource(R.drawable.white1);
                     break;
@@ -318,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             //set grey image
-            switch(die.getDieValue()) {
+            switch(die.getValue()) {
                 case 1:
                     button.setImageResource(R.drawable.grey1);
                     break;

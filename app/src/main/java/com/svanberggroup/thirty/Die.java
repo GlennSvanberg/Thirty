@@ -21,7 +21,7 @@ public class Die {
         mCounted = counted;
     }
 
-    public int getDieValue() {
+    public int getValue() {
         return mDieValue;
     }
 

@@ -6,11 +6,21 @@ public class Option {
     private int mPoints;
     private int mSum;
     private boolean mChoosen;
+    private boolean mAvalible;
 
     public Option(String name, int sum) {
         mName = name;
         mSum = sum;
         mChoosen = false;
+        mAvalible = true;
+    }
+
+    public boolean isAvalible() {
+        return mAvalible;
+    }
+
+    public void setAvalible(boolean avalible) {
+        mAvalible = avalible;
     }
 
     public int getSum() {
