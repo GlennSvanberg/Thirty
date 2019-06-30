@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:stretchColumns="1"
+    android:padding="40dp">
+    <TableRow>
+        <TextView
+            android:text="Option"
+            android:padding="8dip" />
+        <TextView
+            android:text="Result"
+            android:gravity="left"
+            android:padding="8dip" />
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:text="LOW"
+            android:padding="8dip" />
+        <TextView
+            android:id="@+id/resultTextViewLow"
+            android:text="8"
+            android:gravity="left"
+            android:padding="8dip"
+            android:layout_marginLeft="20dp"/>
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:text="4"
+            android:padding="8dip" />
+        <TextView
+            android:id="@+id/resultTextView4"
+            android:text="8"
+            android:gravity="left"
+            android:padding="8dip"
+            android:layout_marginLeft="20dp"/>
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:text="5"
+            android:padding="8dip" />
+        <TextView
+            android:id="@+id/resultTextView5"
+            android:text="8"
+            android:gravity="left"
+            android:padding="8dip"
+            android:layout_marginLeft="20dp"/>
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:text="6"
+            android:padding="8dip" />
+        <TextView
+            android:id="@+id/resultTextView6"
+            android:text="8"
+            android:gravity="left"
+            android:padding="8dip"
+            android:layout_marginLeft="20dp"/>
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:text="7"
+            android:padding="8dip" />
+        <TextView
+            android:id="@+id/resultTextView7"
+            android:text="8"
+            android:gravity="left"
+            android:padding="8dip"
+            android:layout_marginLeft="20dp"/>
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:text="8"
+            android:padding="8dip" />
+        <TextView
+            android:id="@+id/resultTextView8"
+            android:text="8"
+            android:gravity="left"
+            android:padding="8dip"
+            android:layout_marginLeft="20dp"/>
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:text="9"
+            android:padding="8dip" />
+        <TextView
+            android:id="@+id/resultTextView9"
+            android:text="8"
+            android:gravity="left"
+            android:padding="8dip"
+            android:layout_marginLeft="20dp"/>
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:text="10"
+            android:padding="8dip" />
+        <TextView
+            android:id="@+id/resultTextView10"
+            android:text="8"
+            android:gravity="left"
+            android:padding="8dip"
+            android:layout_marginLeft="20dp"/>
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:text="11"
+            android:padding="8dip" />
+        <TextView
+            android:id="@+id/resultTextView11"
+            android:text="8"
+            android:gravity="left"
+            android:padding="8dip"
+            android:layout_marginLeft="20dp"/>
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:text="12"
+            android:padding="8dip" />
+        <TextView
+            android:id="@+id/resultTextView12"
+            android:text="8"
+            android:gravity="left"
+            android:padding="8dip"
+            android:layout_marginLeft="20dp"/>
+    </TableRow>
+    <Button
+        android:id="@+id/playAgainButton"
+        android:text="Play again?"/>
+</TableLayout>

@@ -2,6 +2,7 @@ package com.svanberggroup.thirty;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -94,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
                     // Deactivate button if no valid choice
                     calculatePoints();
                     //
+                    showResult();
                     newRound();
 
 
@@ -124,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         newRound();
-
     }
 
     public void dieClick(View view) {
@@ -141,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
                 setDieImage(die);
             }
         }
-
     }
+
     private void newRound() {
         for (Die die : mDice) {
             mRolls = 1;
@@ -153,6 +154,11 @@ public class MainActivity extends AppCompatActivity {
         }
         mRollButton.setText("ROLL");
         setRoundTextViewText();
+    }
+
+    private void showResult() {
+        Intent intent = ResultActivity.newIntent(MainActivity.this, mOptions);
+        startActivity(intent);
     }
 
     private void setAvalibleOptions(){
