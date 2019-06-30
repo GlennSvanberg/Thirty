@@ -157,7 +157,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showResult() {
-        Intent intent = ResultActivity.newIntent(MainActivity.this, mOptions);
+        int[] sums = new int[10];
+        for (int i = 0; i < mOptions.length; i++) {
+            sums[i] = mOptions[i].getSum();
+        }
+        Intent intent = ResultActivity.newIntent(MainActivity.this, sums);
         startActivity(intent);
     }
 
@@ -180,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void calculatePoints() {
         int sum = 0;
-        int targetValue = mOptions[mOptionNr].getSum();
+        int targetValue = mOptions[mOptionNr].getValue();
 
         for(int i = 0;  mDice.length > i; i++) {
             // Reset dices count
@@ -298,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d(TAG, "Sum: " + sum);
             // Display result
-            Toast toast = Toast.makeText(this, "Option " + targetValue + " gave you " + sum + " points! ", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(this, "Option " + mOptions[mOptionNr].getName() + " gave you " + sum + " points! ", Toast.LENGTH_SHORT);
             toast.show();
 
             // Store sum in option
