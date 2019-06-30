@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -26,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
     private Die[] mDice;
     private Option[] mOptions;
     private int mOptionNr;
-    private int[] mScore;
     private int mRolls;
 
 
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "time to make a choice");
                     // Deactivate button if no valid choice
                     calculatePoints();
-                    //newRound();
+                    newRound();
                     // Calculate points
 
                 }
@@ -167,69 +167,115 @@ public class MainActivity extends AppCompatActivity {
 
             //Check one die
             for (int i = 0; i < mDice.length; i++) {
-                if(mDice[i].getDieValue() == targetValue) {
-                    Log.d(TAG, "Match i: "  + mDice[i].getDieValue());
+                if (mDice[i].getDieValue() == targetValue) {
+                    Log.d(TAG, "Match 1 i: " + mDice[i].getDieValue());
                     mDice[i].setCounted(true);
                     sum = sum + mDice[i].getDieValue();
                 }
             }
             // Check 2 dice
             for (int i = 0; i < mDice.length; i++) {
-                if(!mDice[i].isCounted()) {
-                    for (int j = 0; j < mDice.length; j++) {
-                        if(!mDice[j].isCounted()) {
-                            if(mDice[i].getDieValue() + mDice[j].getDieValue() == targetValue) {
-                                Log.d(TAG, "Match i: "  + mDice[i].getDieValue() + " j: " + mDice[j].getDieValue());
+                for (int j = i + 1; j < mDice.length; j++) {
+                    //check counted
+                    if (!mDice[i].isCounted() && !mDice[j].isCounted()) {
+                        //compare
+                        if (mDice[i].getDieValue() + mDice[j].getDieValue() == targetValue) {
+                            Log.d(TAG, "Match 2 i: " + mDice[i].getDieValue() + " j: " + mDice[j].getDieValue());
+                            mDice[i].setCounted(true);
+                            mDice[j].setCounted(true);
+                            sum = sum + mDice[i].getDieValue() + mDice[j].getDieValue();
+                        }
+                    }
+                }
+            }
+
+            // Check 3 dice
+            for (int i = 0; i < mDice.length; i++) {
+                for (int j = i + 1; j < mDice.length; j++) {
+                    for (int k = j + 1; k < mDice.length; k++) {
+
+                        // check counted
+                        if (!mDice[i].isCounted() && !mDice[j].isCounted() && !mDice[k].isCounted()) {
+                            // Compare
+                            if (mDice[i].getDieValue() + mDice[j].getDieValue() + mDice[k].getDieValue() == targetValue) {
+                                Log.d(TAG, "Match 3 i: " + mDice[i].getDieValue() + " j: " + mDice[j].getDieValue() + " k: " + mDice[k].getDieValue());
                                 mDice[i].setCounted(true);
                                 mDice[j].setCounted(true);
-                                sum = sum + mDice[i].getDieValue()+ mDice[j].getDieValue();
+                                mDice[k].setCounted(true);
+                                sum = sum + mDice[i].getDieValue() + mDice[j].getDieValue() + mDice[k].getDieValue();
                             }
                         }
                     }
                 }
             }
-
-
-/*
-            sum = 0;
-            for (int i = 0; i < values.size(); i++) {
-                if(values.get(i) == targetValue) {
-                    Log.d(TAG, "Single digit: " + values.get(i));
-                    sum += values.get(i);
-                    values.remove(i);
-                }
-            }
-            //Check 2 dice
-            try {
-                int i = 0;
-                while(i < values.size()) {
-                    i++;
-                    int j = 0;
-                    while(j < values.size()) {
-                        j++;
-                        if((values.get(i) + values.get(j)) == targetValue) {
-                            Log.d(TAG, "Pair: " + values.get(i) + " + " + values.get(j));
-                            sum = sum + values.get(i) + values.get(j);
-                            values.remove(i);
-                            values.remove(j);
+            // Check 4 dice
+            for (int i = 0; i < mDice.length; i++) {
+                for (int j = i + 1; j < mDice.length; j++) {
+                    for (int k = j + 1; k < mDice.length; k++) {
+                        for (int l = k + 1; l < mDice.length; l++) {
+                            // check counted
+                            if (!mDice[i].isCounted() && !mDice[j].isCounted() && !mDice[k].isCounted() && !mDice[l].isCounted()) {
+                                //Compare
+                                if (mDice[i].getDieValue() + mDice[j].getDieValue() + mDice[k].getDieValue() + mDice[l].getDieValue() == targetValue) {
+                                    Log.d(TAG, "Match 4 i: " + mDice[i].getDieValue() + " j: " + mDice[j].getDieValue() + " k: " + mDice[k].getDieValue() + " l: " + mDice[l].getDieValue());
+                                    mDice[i].setCounted(true);
+                                    mDice[j].setCounted(true);
+                                    mDice[k].setCounted(true);
+                                    mDice[l].setCounted(true);
+                                    sum = sum + mDice[i].getDieValue() + mDice[j].getDieValue() + mDice[k].getDieValue() + mDice[l].getDieValue();
+                                }
+                            }
                         }
                     }
                 }
-
-            } catch(IndexOutOfBoundsException e) {
-                Log.d(TAG, "indexOutOfBounds: "  + e.getMessage() + "/n" + e.getStackTrace());
             }
+            // Check 5 dice
 
+            for (int i = 0; i < mDice.length; i++) {
+                for (int j = i + 1; j < mDice.length; j++) {
+                    for (int k = j + 1; k < mDice.length; k++) {
+                        for (int l = k + 1; l < mDice.length; l++) {
+                            for (int m = l + 1; m < mDice.length; m++) {
+                                // Check counted
+                                if (!mDice[i].isCounted() && !mDice[j].isCounted() && !mDice[k].isCounted() && !mDice[l].isCounted() && !mDice[m].isCounted()) {
+                                    // Compare
+                                    if (mDice[i].getDieValue() + mDice[j].getDieValue() + mDice[k].getDieValue() + mDice[l].getDieValue() + mDice[m].getDieValue() == targetValue) {
+                                        Log.d(TAG, "Match 5 i: " + mDice[i].getDieValue() + " j: " + mDice[j].getDieValue() + " k: " + mDice[k].getDieValue() + " l: " + mDice[l].getDieValue() + " m: " + +mDice[m].getDieValue());
+                                        mDice[i].setCounted(true);
+                                        mDice[j].setCounted(true);
+                                        mDice[k].setCounted(true);
+                                        mDice[l].setCounted(true);
+                                        mDice[m].setCounted(true);
+                                        sum = sum + mDice[i].getDieValue() + mDice[j].getDieValue() + mDice[k].getDieValue() + mDice[l].getDieValue() + mDice[m].getDieValue();
+                                    }
+                                }
 
+                            }
+                        }
+                    }
+                }
+            }
+            // check all dice
+            int t = 0;
+            for (int i = 0; i < mDice.length; i++) {
+                if (!mDice[i].isCounted()) {
+                    t = t + mDice[i].getDieValue();
+                }
+            }
+            if (t == targetValue) {
+                sum = t;
+                Log.d(TAG, "all values: " + sum);
+            }
+        }
 
-            // check 3 digits
-            */
             Log.d(TAG, "Sum: " + sum);
+            Toast toast = Toast.makeText(this, "Option " + targetValue + " gave you " + sum + " points! ", Toast.LENGTH_SHORT);
+            toast.show();
         }
 
 
 
-    }
+
 
 
 
