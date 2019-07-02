@@ -94,8 +94,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "time to make a choice");
                     // Deactivate button if no valid choice
                     calculatePoints();
-                    //
-                    showResult();
+
                     newRound();
 
 
@@ -145,15 +144,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void newRound() {
-        for (Die die : mDice) {
-            mRolls = 1;
-            die.roll();
-            die.setActive(true);
-            setDieImage(die);
-            setAvalibleOptions();
+        setAvalibleOptions();
+        if(mAvalibleOptions.size() != 0) {
+            for (Die die : mDice) {
+                mRolls = 1;
+                die.roll();
+                die.setActive(true);
+                setDieImage(die);
+
+            }
+            mRollButton.setText("ROLL");
+            setRoundTextViewText();
+        } else {
+            showResult();
         }
-        mRollButton.setText("ROLL");
-        setRoundTextViewText();
+
     }
 
     private void showResult() {
