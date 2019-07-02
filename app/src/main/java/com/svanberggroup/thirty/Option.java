@@ -3,27 +3,25 @@ package com.svanberggroup.thirty;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Option implements Parcelable {
+public class Option implements Parcelable{
 
     private String mName;
     private int mSum;
     private int mValue;
-    private boolean mChoosen;
-    private boolean mAvalible;
+    private boolean mAvailable;
 
     public Option(String name, int value) {
         mName = name;
         mValue = value;
-        mChoosen = false;
-        mAvalible = true;
+        mAvailable = true;
         mSum = 0;
     }
 
     protected Option(Parcel in) {
         mName = in.readString();
         mSum = in.readInt();
-        mChoosen = in.readByte() != 0;
-        mAvalible = in.readByte() != 0;
+        mValue = in.readInt();
+        mAvailable = in.readByte() != 0;
     }
 
     public static final Creator<Option> CREATOR = new Creator<Option>() {
@@ -37,15 +35,16 @@ public class Option implements Parcelable {
             return new Option[size];
         }
     };
+
     public int getValue() {
         return mValue;
     }
-    public boolean isAvalible() {
-        return mAvalible;
+    public boolean isAvailable() {
+        return mAvailable;
     }
 
-    public void setAvalible(boolean avalible) {
-        mAvalible = avalible;
+    public void setAvailable(boolean avaliable) {
+        mAvailable = avaliable;
     }
 
     public int getSum() {
@@ -55,24 +54,15 @@ public class Option implements Parcelable {
     public void setSum(int sum) {
         mSum = sum;
     }
+
     public String getName() {
         return mName;
     }
-
-    public void setChoosen(boolean choosen) {
-        this.mChoosen = choosen;
-    }
-
-    public boolean choosen() {
-        return mChoosen;
-    }
-
 
     @Override
     public String toString() {
         return mName;
     }
-
 
     @Override
     public int describeContents() {
@@ -81,10 +71,7 @@ public class Option implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(mName);
         parcel.writeInt(mSum);
-        parcel.writeByte((byte) (mChoosen ? 1 : 0));
-        parcel.writeByte((byte) (mAvalible ? 1 : 0));
-
+        parcel.writeByte((byte) (mAvailable ? 1 : 0));
     }
 }

@@ -19,6 +19,11 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private static final String KEY_DICE = "Dice";
+    private static final String KEY_ROLLS = "Rolls";
+    private static final String KEY_OPTION = "Options";
+    private static final String KEY_OPTION_NR = "Options";
+
 
     private ImageButton mDie0, mDie1, mDie2, mDie3, mDie4, mDie5;
     private Button mRollButton;
@@ -27,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Die[] mDice;
     private Option[] mOptions;
-    private ArrayList<Option> mAvalibleOptions;
+    private ArrayList<Option> mAvailableOptions;
     private int mOptionNr;
     private int mRolls;
 
@@ -71,17 +76,14 @@ public class MainActivity extends AppCompatActivity {
         mRollButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 //Roll dies
                 roll();
-
-
             }
         });
 
         mRoundTextView = findViewById(R.id.roundTextView);
-
-        setAvaliableOptions();
+        setRoundTextViewText();
+        setAvailableOptions();
 
 
         mOptionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -89,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mOptionNr = i;
                 for (int j = 0; j < mOptions.length; j++) {
-                    if(mAvalibleOptions.get(i).getName() == mOptions[j].getName()) {
+                    if(mAvailableOptions.get(i).getName() == mOptions[j].getName()) {
                         mOptionNr = j;
                     }
                 }
@@ -101,41 +103,78 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        newRound();
-    }
-    private void roll() {
-        // Check if it is time to roll dice
-        if(mRolls <= 2) {
+        // onSaved
+        Log.d(TAG,"Hi");
+        if (savedInstanceState != null) {
+            // Recover rolls
 
-            // Loop all dice
-            for(Die die : mDice) {
-                // Check if die is active
-                if(die.isActive()) {
-                    die.roll();
-                    setDieImage(die);
-                }
+            mRolls = savedInstanceState.getInt(KEY_ROLLS);
+            Log.d(TAG, "saved rolls: " + mRolls);
+            // Recover dice
+            Log.d(TAG, "found savedState");
+            Die[] savedDice = (Die[]) savedInstanceState.getParcelableArray(KEY_DICE);
+
+            for(int i = 0; i < mDice.length; i++) {
+                mDice[i].setValue(savedDice[i].getValue());
+                mDice[i].setActive((savedDice[i].isActive()));
+                setDieImage(mDice[i]);
             }
+            // Recover Options
 
             setRoundTextViewText();
 
-        } else if (mRolls == 3) {
-            // Move String to res
-            mRollButton.setText("CHOOSE");
+            Log.d(TAG, "Found value: " + savedInstanceState.getInt(KEY_OPTION_NR));
+            mOptionNr = savedInstanceState.getInt(KEY_OPTION_NR);
+/*
+            Option[] o = (Option[]) savedInstanceState.getParcelableArray(KEY_OPTION);
+            for(int i = 0; i < mOptions.length; i++) {
+                mOptions[i].setSum(o[i].getSum());
+                mOptions[i].setAvailable(o[i].isAvailable());
+            }
+*/
+            setAvailableOptions();
 
-            //Update round count textview
-            setRoundTextViewText();
-        }else {
 
-            calculatePoints();
+        } else {
+            Log.d(TAG, "didn't find savedState");
             newRound();
+            setRoundTextViewText();
 
         }
-        mRolls++;
+    }
+
+    private void roll() {
+        // Check if it is time to roll dice
+        if(mRolls <= 1) {
+
+            updateDice();
+            mRolls++;
+            setRoundTextViewText();
+
+        } else if (mRolls == 2) {
+            // Move String to res
+            mRolls++;
+            setRoundTextViewText();
+            mRollButton.setText("CHOOSE");
+        }else {
+            calculatePoints();
+            newRound();
+        }
+    }
+    public void updateDice() {
+        // Loop all dice
+        for(Die die : mDice) {
+            // Check if die is active
+            if(die.isActive()) {
+                die.roll();
+                setDieImage(die);
+            }
+        }
     }
     public void dieClick(View view) {
         // Find the Die that has been clicked
         for (Die die : mDice) {
-            if(die.getDieId() == view.getId()) {
+            if(die.getId() == view.getId()) {
 
                 //Is the die active?
                 if(die.isActive()) {
@@ -149,21 +188,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void newRound() {
-        setAvaliableOptions();
-        if(mAvalibleOptions.size() != 0) {
+
+        setAvailableOptions();
+        // Reset dice
+        if(mAvailableOptions.size() != 0) {
             for (Die die : mDice) {
-                mRolls = 1;
                 die.roll();
                 die.setActive(true);
                 setDieImage(die);
-
             }
             mRollButton.setText("ROLL");
+            mRolls = 1;
             setRoundTextViewText();
         } else {
             showResult();
         }
-
     }
 
     private void showResult() {
@@ -175,15 +214,19 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void setAvaliableOptions(){
-        mAvalibleOptions = new ArrayList<Option>();
+    private void setAvailableOptions(){
+        mAvailableOptions = new ArrayList<Option>();
+        Log.d(TAG,"test3");
         for(Option o : mOptions) {
-            if(o.isAvalible()) {
-                mAvalibleOptions.add(o);
+            Log.d(TAG,"test3,5");
+            if(o.isAvailable()) {
+                Log.d(TAG,"test4");
+                mAvailableOptions.add(o);
             }
         }
+        Log.d(TAG,"test5");
         mOptionsSpinner = findViewById(R.id.optionsSpinner);
-        ArrayAdapter<Option> dataAdapter = new ArrayAdapter<Option>(this, android.R.layout.simple_spinner_item, mAvalibleOptions);
+        ArrayAdapter<Option> dataAdapter = new ArrayAdapter<Option>(this, android.R.layout.simple_spinner_item, mAvailableOptions);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mOptionsSpinner.setAdapter(dataAdapter);
     }
@@ -306,9 +349,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "all values: " + sum);
             }
         }
-
-            // Set option not avalible
-            mOptions[mOptionNr].setAvalible(false);
+            // Set option not avaliable
+            mOptions[mOptionNr].setAvailable(false);
 
             // Display result
             Toast toast = Toast.makeText(this, "Option " + mOptions[mOptionNr].getName() + " gave you " + sum + " points! ", Toast.LENGTH_SHORT);
@@ -319,7 +361,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     private void setDieImage(Die die) {
-        ImageButton button = findViewById(die.getDieId());
+        ImageButton button = findViewById(die.getId());
         if(die.isActive()) {
             //set white image
             switch(die.getValue()) {
@@ -366,6 +408,13 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putParcelableArray(KEY_DICE, mDice);
+        savedInstanceState.putParcelableArray(KEY_OPTION, mOptions);
+        savedInstanceState.putInt(KEY_ROLLS, mRolls);
+        savedInstanceState.putInt(KEY_OPTION_NR, mOptionNr);
+    }
 
 }

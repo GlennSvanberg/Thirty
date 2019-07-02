@@ -1,18 +1,43 @@
 package com.svanberggroup.thirty;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Random;
 
-public class Die {
+public class Die implements Parcelable {
 
-    private int mDieValue;
-    private int mDieId;
+    private int mValue;
+    private int mId;
     private boolean mIsActive;
     private boolean mCounted;
 
     public Die(int dieId) {
-        mDieId = dieId;
+        mId = dieId;
         mIsActive = true;
     }
+
+    protected Die(Parcel in) {
+        mValue = in.readInt();
+        mId = in.readInt();
+        mIsActive = in.readByte() != 0;
+        mCounted = in.readByte() != 0;
+    }
+    public static final Creator<Die> CREATOR = new Creator<Die>() {
+        @Override
+        public Die createFromParcel(Parcel in) {
+            Die die = new Die(in);
+            die.setActive(in.readByte() != 0);
+            return die;
+        }
+
+        @Override
+        public Die[] newArray(int size) {
+            return new Die[size];
+        }
+    };
+
+
     public boolean isCounted() {
         return mCounted;
     }
@@ -22,15 +47,15 @@ public class Die {
     }
 
     public int getValue() {
-        return mDieValue;
+        return mValue;
     }
 
-    public void setDieValue(int dieValue) {
-        mDieValue = dieValue;
+    public void setValue(int value) {
+        mValue = value;
     }
 
-    public int getDieId() {
-        return mDieId;
+    public int getId() {
+        return mId;
     }
 
     public boolean isActive() {
@@ -44,7 +69,18 @@ public class Die {
     public void roll() {
         Random rand = new Random();
         int i = rand.nextInt(6);
-        mDieValue = i + 1;
+        mValue = i + 1;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(mValue);
+        parcel.writeByte((byte) (mIsActive ? 1 : 0));
     }
 
 }
