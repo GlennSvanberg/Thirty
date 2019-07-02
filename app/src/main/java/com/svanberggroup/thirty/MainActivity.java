@@ -67,44 +67,21 @@ public class MainActivity extends AppCompatActivity {
                 new Option("12", 12)
         };
 
-
-
-
-
         mRollButton = findViewById(R.id.rollButton);
         mRollButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 //Roll dies
-                mRolls++;
-                if(mRolls <= 3) {
-                    for(Die die : mDice) {
-                        if(die.isActive()) {
-                            die.roll();
-                            setDieImage(die);
-                        }
-                    }
-                    setRoundTextViewText();
+                roll();
 
-                    if(mRolls == 3) {
-                        // Move String to res
-                        mRollButton.setText("CHOOSE");
-                    }
-                } else {
-                    Log.d(TAG, "time to make a choice");
-                    // Deactivate button if no valid choice
-                    calculatePoints();
-
-                    newRound();
-
-
-                }
 
             }
         });
+
         mRoundTextView = findViewById(R.id.roundTextView);
 
-        setAvalibleOptions();
+        setAvaliableOptions();
 
 
         mOptionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -126,7 +103,35 @@ public class MainActivity extends AppCompatActivity {
 
         newRound();
     }
+    private void roll() {
+        // Check if it is time to roll dice
+        if(mRolls <= 2) {
 
+            // Loop all dice
+            for(Die die : mDice) {
+                // Check if die is active
+                if(die.isActive()) {
+                    die.roll();
+                    setDieImage(die);
+                }
+            }
+
+            setRoundTextViewText();
+
+        } else if (mRolls == 3) {
+            // Move String to res
+            mRollButton.setText("CHOOSE");
+
+            //Update round count textview
+            setRoundTextViewText();
+        }else {
+
+            calculatePoints();
+            newRound();
+
+        }
+        mRolls++;
+    }
     public void dieClick(View view) {
         // Find the Die that has been clicked
         for (Die die : mDice) {
@@ -144,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void newRound() {
-        setAvalibleOptions();
+        setAvaliableOptions();
         if(mAvalibleOptions.size() != 0) {
             for (Die die : mDice) {
                 mRolls = 1;
@@ -170,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void setAvalibleOptions(){
+    private void setAvaliableOptions(){
         mAvalibleOptions = new ArrayList<Option>();
         for(Option o : mOptions) {
             if(o.isAvalible()) {
@@ -305,7 +310,6 @@ public class MainActivity extends AppCompatActivity {
             // Set option not avalible
             mOptions[mOptionNr].setAvalible(false);
 
-            Log.d(TAG, "Sum: " + sum);
             // Display result
             Toast toast = Toast.makeText(this, "Option " + mOptions[mOptionNr].getName() + " gave you " + sum + " points! ", Toast.LENGTH_SHORT);
             toast.show();

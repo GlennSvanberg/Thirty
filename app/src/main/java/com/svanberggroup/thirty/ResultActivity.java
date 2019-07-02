@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class ResultActivity extends AppCompatActivity {
@@ -15,6 +17,7 @@ public class ResultActivity extends AppCompatActivity {
     private static final String EXTRA_RESULT = "com.svanberggroup.android.thirty.result";
 
     private TextView mTextViewLow, mTextView4, mTextView5, mTextView6, mTextView7, mTextView8, mTextView9, mTextView10, mTextView11, mTextView12;
+    private Button mPlayAgainButton;
     private int[] mValues;
 
     public static Intent newIntent(Context packageContext, int[] result) {
@@ -64,9 +67,17 @@ public class ResultActivity extends AppCompatActivity {
         mTextView12 = findViewById(R.id.resultTextView12);
         mTextView12.setText(String.valueOf(mValues[9]));
 
-
-
+        mPlayAgainButton = findViewById(R.id.playAgainButton);
+        mPlayAgainButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ResultActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
     }
+
+
 }
