@@ -3,48 +3,49 @@ package com.svanberggroup.thirty;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Option implements Parcelable{
+public class GameOption implements Parcelable{
 
     private String mName;
     private int mSum;
     private int mValue;
-    private boolean mAvailable;
+    private boolean mIsAvailable;
 
-    public Option(String name, int value) {
+    public GameOption(String name, int value) {
         mName = name;
         mValue = value;
-        mAvailable = true;
+        mIsAvailable = true;
         mSum = 0;
     }
 
-    protected Option(Parcel in) {
+    protected GameOption(Parcel in) {
         mName = in.readString();
         mSum = in.readInt();
         mValue = in.readInt();
-        mAvailable = in.readByte() != 0;
+        mIsAvailable = in.readByte() != 0;
     }
 
-    public static final Creator<Option> CREATOR = new Creator<Option>() {
+    public static final Creator<GameOption> CREATOR = new Creator<GameOption>() {
         @Override
-        public Option createFromParcel(Parcel in) {
-            return new Option(in);
+        public GameOption createFromParcel(Parcel in) {
+            return new GameOption(in);
         }
 
         @Override
-        public Option[] newArray(int size) {
-            return new Option[size];
+        public GameOption[] newArray(int size) {
+            return new GameOption[size];
         }
     };
 
     public int getValue() {
         return mValue;
     }
+
     public boolean isAvailable() {
-        return mAvailable;
+        return mIsAvailable;
     }
 
-    public void setAvailable(boolean avaliable) {
-        mAvailable = avaliable;
+    public void setAvailable(boolean available) {
+        mIsAvailable = available;
     }
 
     public int getSum() {
@@ -72,6 +73,11 @@ public class Option implements Parcelable{
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(mSum);
-        parcel.writeByte((byte) (mAvailable ? 1 : 0));
+        parcel.writeString(mName);
+        parcel.writeInt(mValue);
+        parcel.writeByte((byte) (mIsAvailable ? 1 : 0));
+
     }
+
+
 }

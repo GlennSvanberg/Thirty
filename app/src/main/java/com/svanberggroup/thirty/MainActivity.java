@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,22 +19,22 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "DiceActivity";
     private static final String KEY_DICE = "Dice";
     private static final String KEY_ROLLS = "Rolls";
-    private static final String KEY_OPTION = "Options";
-    private static final String KEY_OPTION_NR = "Options";
+    private static final String KEY_GAME_OPTION = "Options";
+    private static final String KEY_GAME_OPTION_NR = "Options";
 
 
     private ImageButton mDie0, mDie1, mDie2, mDie3, mDie4, mDie5;
     private Button mRollButton;
     private TextView mRoundTextView;
-    private Spinner mOptionsSpinner;
+    private Spinner mGameOptionsSpinner;
 
     private Die[] mDice;
-    private Option[] mOptions;
-    private ArrayList<Option> mAvailableOptions;
-    private int mOptionNr;
+    private GameOption[] mGameOptions;
+    private ArrayList<GameOption> mAvailableGameOptions;
+    private int mGameOptionNr;
     private int mRolls;
 
 
@@ -59,17 +60,17 @@ public class MainActivity extends AppCompatActivity {
                 new Die(mDie5.getId())
         };
 
-        mOptions = new Option[] {
-                new Option("LOW", 0),
-                new Option("4" ,4),
-                new Option("5", 5),
-                new Option("6", 6),
-                new Option("7", 7),
-                new Option("8", 8),
-                new Option("9", 9),
-                new Option("10", 10),
-                new Option("11", 11),
-                new Option("12", 12)
+        mGameOptions = new GameOption[] {
+                new GameOption("LOW", 0),
+                new GameOption("4" ,4),
+                new GameOption("5", 5),
+                new GameOption("6", 6),
+                new GameOption("7", 7),
+                new GameOption("8", 8),
+                new GameOption("9", 9),
+                new GameOption("10", 10),
+                new GameOption("11", 11),
+                new GameOption("12", 12)
         };
 
         mRollButton = findViewById(R.id.rollButton);
@@ -83,20 +84,20 @@ public class MainActivity extends AppCompatActivity {
 
         mRoundTextView = findViewById(R.id.roundTextView);
         setRoundTextViewText();
-        setAvailableOptions();
+        setAvailableGameOptions();
 
 
-        mOptionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        mGameOptionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mOptionNr = i;
-                for (int j = 0; j < mOptions.length; j++) {
-                    if(mAvailableOptions.get(i).getName() == mOptions[j].getName()) {
-                        mOptionNr = j;
+                mGameOptionNr = i;
+                for (int j = 0; j < mGameOptions.length; j++) {
+                    if(mAvailableGameOptions.get(i).getName() == mGameOptions[j].getName()) {
+                        mGameOptionNr = j;
                     }
                 }
 
-                Log.d(TAG, "Option: " + String.valueOf(mOptions[i]));
+                Log.d(TAG, "GameOption: " + String.valueOf(mGameOptions[i]));
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -119,20 +120,31 @@ public class MainActivity extends AppCompatActivity {
                 mDice[i].setActive((savedDice[i].isActive()));
                 setDieImage(mDice[i]);
             }
-            // Recover Options
+            // Recover GameOptions
 
             setRoundTextViewText();
 
-            Log.d(TAG, "Found value: " + savedInstanceState.getInt(KEY_OPTION_NR));
-            mOptionNr = savedInstanceState.getInt(KEY_OPTION_NR);
-/*
-            Option[] o = (Option[]) savedInstanceState.getParcelableArray(KEY_OPTION);
-            for(int i = 0; i < mOptions.length; i++) {
-                mOptions[i].setSum(o[i].getSum());
-                mOptions[i].setAvailable(o[i].isAvailable());
+            Log.d(TAG, "Found value: " + savedInstanceState.getInt(KEY_GAME_OPTION_NR));
+            mGameOptionNr = savedInstanceState.getInt(KEY_GAME_OPTION_NR);
+
+            Parcelable[] o = savedInstanceState.getParcelableArray(KEY_GAME_OPTION);
+            if(o instanceof GameOption[]) {
+                GameOption[] op = (GameOption[]) o;
+                for(GameOption ops : op) {
+                    Log.d(TAG,ops.getName());
+                }
+            } else {
+                Log.d(TAG,String.valueOf(o));
+            }
+
+
+            /*
+            for(int i = 0; i < mGameOptions.length; i++) {
+                mGameOptions[i].setSum(o[i].getSum());
+                mGameOptions[i].setAvailable(o[i].isAvailable());
             }
 */
-            setAvailableOptions();
+            setAvailableGameOptions();
 
 
         } else {
@@ -189,9 +201,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void newRound() {
 
-        setAvailableOptions();
+        setAvailableGameOptions();
         // Reset dice
-        if(mAvailableOptions.size() != 0) {
+        if(mAvailableGameOptions.size() != 0) {
             for (Die die : mDice) {
                 die.roll();
                 die.setActive(true);
@@ -207,28 +219,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void showResult() {
         int[] sums = new int[10];
-        for (int i = 0; i < mOptions.length; i++) {
-            sums[i] = mOptions[i].getSum();
+        for (int i = 0; i < mGameOptions.length; i++) {
+            sums[i] = mGameOptions[i].getSum();
         }
         Intent intent = ResultActivity.newIntent(MainActivity.this, sums);
         startActivity(intent);
     }
 
-    private void setAvailableOptions(){
-        mAvailableOptions = new ArrayList<Option>();
-        Log.d(TAG,"test3");
-        for(Option o : mOptions) {
-            Log.d(TAG,"test3,5");
+    private void setAvailableGameOptions(){
+        mAvailableGameOptions = new ArrayList<GameOption>();
+        for(GameOption o : mGameOptions) {
             if(o.isAvailable()) {
-                Log.d(TAG,"test4");
-                mAvailableOptions.add(o);
+                mAvailableGameOptions.add(o);
             }
         }
-        Log.d(TAG,"test5");
-        mOptionsSpinner = findViewById(R.id.optionsSpinner);
-        ArrayAdapter<Option> dataAdapter = new ArrayAdapter<Option>(this, android.R.layout.simple_spinner_item, mAvailableOptions);
+        mGameOptionsSpinner = findViewById(R.id.gameOptionsSpinner);
+        ArrayAdapter<GameOption> dataAdapter = new ArrayAdapter<GameOption>(this, android.R.layout.simple_spinner_item, mAvailableGameOptions);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mOptionsSpinner.setAdapter(dataAdapter);
+        mGameOptionsSpinner.setAdapter(dataAdapter);
     }
 
     private void setRoundTextViewText() {
@@ -237,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void calculatePoints() {
         int sum = 0;
-        int targetValue = mOptions[mOptionNr].getValue();
+        int targetValue = mGameOptions[mGameOptionNr].getValue();
 
         for(int i = 0;  mDice.length > i; i++) {
             // Reset dices count
@@ -245,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Calculate LOW
-        if(mOptionNr == 0) {
+        if(mGameOptionNr == 0) {
             for(int i =0; i < mDice.length; i++) {
                 if(mDice[i].getValue() <= 3) {
                     sum += i;
@@ -349,15 +357,15 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "all values: " + sum);
             }
         }
-            // Set option not avaliable
-            mOptions[mOptionNr].setAvailable(false);
+            // Set GameOption not avaliable
+            mGameOptions[mGameOptionNr].setAvailable(false);
 
             // Display result
-            Toast toast = Toast.makeText(this, "Option " + mOptions[mOptionNr].getName() + " gave you " + sum + " points! ", Toast.LENGTH_SHORT);
+            Toast toast = Toast.makeText(this, "GameOption " + mGameOptions[mGameOptionNr].getName() + " gave you " + sum + " points! ", Toast.LENGTH_SHORT);
             toast.show();
 
-            // Store sum in option
-            mOptions[mOptionNr].setSum(sum);
+            // Store sum in GameOption
+            mGameOptions[mGameOptionNr].setSum(sum);
         }
 
     private void setDieImage(Die die) {
@@ -411,10 +419,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
+
+        savedInstanceState.putParcelableArray(KEY_GAME_OPTION, mGameOptions);
         savedInstanceState.putParcelableArray(KEY_DICE, mDice);
-        savedInstanceState.putParcelableArray(KEY_OPTION, mOptions);
+
         savedInstanceState.putInt(KEY_ROLLS, mRolls);
-        savedInstanceState.putInt(KEY_OPTION_NR, mOptionNr);
+        savedInstanceState.putInt(KEY_GAME_OPTION_NR, mGameOptionNr);
     }
 
 }

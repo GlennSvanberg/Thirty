@@ -26,9 +26,7 @@ public class Die implements Parcelable {
     public static final Creator<Die> CREATOR = new Creator<Die>() {
         @Override
         public Die createFromParcel(Parcel in) {
-            Die die = new Die(in);
-            die.setActive(in.readByte() != 0);
-            return die;
+            return new Die(in);
         }
 
         @Override
