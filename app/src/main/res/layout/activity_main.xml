@@ -13,7 +13,6 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="8dp"
         android:gravity="center"
-        android:text="this is a sample text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -102,7 +101,7 @@
         android:layout_marginBottom="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:text="ROLL"/>
+        android:text="@string/RollButtonText"/>
 
     <Spinner
         android:id="@+id/gameOptionsSpinner"

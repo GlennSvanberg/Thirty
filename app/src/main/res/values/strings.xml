@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Thirty</string>
+    <string name="RollButtonText">ROLL</string>
+    <string name="ChooseButtonText">CHOOSE</string>
+    <string name="RollText">Roll </string>
+    <string name="EndRollText"> / 3 </string>
+    <string name="GameOptionText">GameOption </string>
+    <string name="GaveYouText"> gave you </string>
+    <string name="PointsText"> Points!</string>
 </resources>

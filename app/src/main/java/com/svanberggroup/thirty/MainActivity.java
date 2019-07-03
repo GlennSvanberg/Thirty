@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_DICE = "Dice";
     private static final String KEY_ROLLS = "Rolls";
     private static final String KEY_GAME_OPTION_SUM = "GameOptionSum";
-    private static final String KEY_GAME_OPTION_AVILABLE = "GameOptionAvilable";
+    private static final String KEY_GAME_OPTION_AVAILABLE = "GameOptionAvailable";
     private static final String KEY_GAME_OPTION_NR = "Options";
 
 
@@ -97,23 +97,15 @@ public class MainActivity extends AppCompatActivity {
                         mGameOptionNr = j;
                     }
                 }
-
-                Log.d(TAG, "GameOption: " + String.valueOf(mGameOptions[i]));
             }
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
         });
 
-        // onSaved
-        Log.d(TAG,"Hi");
         if (savedInstanceState != null) {
-            // Recover rolls
 
             mRolls = savedInstanceState.getInt(KEY_ROLLS);
-            Log.d(TAG, "saved rolls: " + mRolls);
-            // Recover dice
-            Log.d(TAG, "found savedState");
             Die[] savedDice = (Die[]) savedInstanceState.getParcelableArray(KEY_DICE);
 
             for(int i = 0; i < mDice.length; i++) {
@@ -121,27 +113,23 @@ public class MainActivity extends AppCompatActivity {
                 mDice[i].setActive((savedDice[i].isActive()));
                 setDieImage(mDice[i]);
             }
-            // Recover GameOptions
+
             int[] savedGameOptionsSum = savedInstanceState.getIntArray(KEY_GAME_OPTION_SUM);
-            byte[] savedGameOptionsIsAvialible = savedInstanceState.getByteArray(KEY_GAME_OPTION_AVILABLE);
+            byte[] savedGameOptionsIsAvialible = savedInstanceState.getByteArray(KEY_GAME_OPTION_AVAILABLE);
 
             for(int i = 0; i < mGameOptions.length; i++) {
                 mGameOptions[i].setSum(savedGameOptionsSum[i]);
                 mGameOptions[i].setAvailable(savedGameOptionsIsAvialible[i] != 0);
             }
 
-            setRoundTextViewText();
 
-            Log.d(TAG, "Found value: " + savedInstanceState.getInt(KEY_GAME_OPTION_NR));
             mGameOptionNr = savedInstanceState.getInt(KEY_GAME_OPTION_NR);
 
-
-            // Recover GameOption
+            setRoundTextViewText();
             setAvailableGameOptions();
 
 
         } else {
-            Log.d(TAG, "didn't find savedState");
             newRound();
             setRoundTextViewText();
 
@@ -157,12 +145,13 @@ public class MainActivity extends AppCompatActivity {
             setRoundTextViewText();
 
         } else if (mRolls == 2) {
-            // Move String to res
+            updateDice();
             mRolls++;
             setRoundTextViewText();
-            mRollButton.setText("CHOOSE");
+            mRollButton.setText(getString(R.string.ChooseButtonText));
         }else {
             calculatePoints();
+            showScore();
             newRound();
         }
     }
@@ -177,11 +166,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void dieClick(View view) {
-        // Find the Die that has been clicked
         for (Die die : mDice) {
             if(die.getId() == view.getId()) {
-
-                //Is the die active?
                 if(die.isActive()) {
                     die.setActive(false);
                 } else {
@@ -195,14 +181,13 @@ public class MainActivity extends AppCompatActivity {
     private void newRound() {
 
         setAvailableGameOptions();
-        // Reset dice
         if(mAvailableGameOptions.size() != 0) {
             for (Die die : mDice) {
                 die.roll();
                 die.setActive(true);
                 setDieImage(die);
             }
-            mRollButton.setText("ROLL");
+            mRollButton.setText(getString(R.string.RollButtonText));
             mRolls = 1;
             setRoundTextViewText();
         } else {
@@ -233,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setRoundTextViewText() {
-        mRoundTextView.setText("Rolls: " + mRolls + " / 3");
+        mRoundTextView.setText(getString(R.string.RollText) + mRolls + getString(R.string.EndRollText));
     }
 
     private void calculatePoints() {
@@ -347,18 +332,16 @@ public class MainActivity extends AppCompatActivity {
             }
             if (t == targetValue) {
                 sum = t;
-                Log.d(TAG, "all values: " + sum);
             }
         }
-            // Set GameOption not avaliable
+
             mGameOptions[mGameOptionNr].setAvailable(false);
-
-            // Display result
-            Toast toast = Toast.makeText(this, "GameOption " + mGameOptions[mGameOptionNr].getName() + " gave you " + sum + " points! ", Toast.LENGTH_SHORT);
-            toast.show();
-
-            // Store sum in GameOption
             mGameOptions[mGameOptionNr].setSum(sum);
+        }
+
+        private void showScore() {
+            Toast toast = Toast.makeText(this, getString(R.string.GameOptionText) + " " + mGameOptions[mGameOptionNr].getName()  + " " + getString(R.string.GaveYouText) + " " + mGameOptions[mGameOptionNr].getSum() +  " " + getString(R.string.PointsText), Toast.LENGTH_SHORT);
+            toast.show();
         }
 
     private void setDieImage(Die die) {
@@ -419,7 +402,7 @@ public class MainActivity extends AppCompatActivity {
             gameOptionAvailable[i] = (byte) (mGameOptions[i].isAvailable() ? 1 : 0);
         }
         savedInstanceState.putIntArray(KEY_GAME_OPTION_SUM, gameOptionSum);
-        savedInstanceState.putByteArray(KEY_GAME_OPTION_AVILABLE, gameOptionAvailable);
+        savedInstanceState.putByteArray(KEY_GAME_OPTION_AVAILABLE, gameOptionAvailable);
 
         savedInstanceState.putParcelableArray(KEY_DICE, mDice);
 
