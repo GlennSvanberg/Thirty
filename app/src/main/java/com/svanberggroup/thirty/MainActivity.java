@@ -22,7 +22,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "DiceActivity";
     private static final String KEY_DICE = "Dice";
     private static final String KEY_ROLLS = "Rolls";
-    private static final String KEY_GAME_OPTION = "Options";
+    private static final String KEY_GAME_OPTION_SUM = "GameOptionSum";
+    private static final String KEY_GAME_OPTION_AVILABLE = "GameOptionAvilable";
     private static final String KEY_GAME_OPTION_NR = "Options";
 
 
@@ -121,29 +122,21 @@ public class MainActivity extends AppCompatActivity {
                 setDieImage(mDice[i]);
             }
             // Recover GameOptions
+            int[] savedGameOptionsSum = savedInstanceState.getIntArray(KEY_GAME_OPTION_SUM);
+            byte[] savedGameOptionsIsAvialible = savedInstanceState.getByteArray(KEY_GAME_OPTION_AVILABLE);
+
+            for(int i = 0; i < mGameOptions.length; i++) {
+                mGameOptions[i].setSum(savedGameOptionsSum[i]);
+                mGameOptions[i].setAvailable(savedGameOptionsIsAvialible[i] != 0);
+            }
 
             setRoundTextViewText();
 
             Log.d(TAG, "Found value: " + savedInstanceState.getInt(KEY_GAME_OPTION_NR));
             mGameOptionNr = savedInstanceState.getInt(KEY_GAME_OPTION_NR);
 
-            Parcelable[] o = savedInstanceState.getParcelableArray(KEY_GAME_OPTION);
-            if(o instanceof GameOption[]) {
-                GameOption[] op = (GameOption[]) o;
-                for(GameOption ops : op) {
-                    Log.d(TAG,ops.getName());
-                }
-            } else {
-                Log.d(TAG,String.valueOf(o));
-            }
 
-
-            /*
-            for(int i = 0; i < mGameOptions.length; i++) {
-                mGameOptions[i].setSum(o[i].getSum());
-                mGameOptions[i].setAvailable(o[i].isAvailable());
-            }
-*/
+            // Recover GameOption
             setAvailableGameOptions();
 
 
@@ -419,8 +412,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
+        int[] gameOptionSum = new int[10];
+        byte[] gameOptionAvailable = new byte[10];
+        for(int i = 0; i < mGameOptions.length; i++) {
+            gameOptionSum[i] = mGameOptions[i].getSum();
+            gameOptionAvailable[i] = (byte) (mGameOptions[i].isAvailable() ? 1 : 0);
+        }
+        savedInstanceState.putIntArray(KEY_GAME_OPTION_SUM, gameOptionSum);
+        savedInstanceState.putByteArray(KEY_GAME_OPTION_AVILABLE, gameOptionAvailable);
 
-        savedInstanceState.putParcelableArray(KEY_GAME_OPTION, mGameOptions);
         savedInstanceState.putParcelableArray(KEY_DICE, mDice);
 
         savedInstanceState.putInt(KEY_ROLLS, mRolls);
