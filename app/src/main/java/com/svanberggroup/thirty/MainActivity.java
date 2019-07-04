@@ -18,7 +18,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    
+
     private static final String KEY_DICES = "Dices";
     private static final String KEY_ROLLS = "Rolls";
     private static final String KEY_GAME_OPTION_SUM = "GameOptionSum";
@@ -75,14 +75,15 @@ public class MainActivity extends AppCompatActivity {
                 new GameOption(getString(R.string.Twelve), 12)
         };
 
+
+        /**
+         * Checks mRolls number and either rolls the dices or calculates the points and
+         * moves to next round if all rols for this round is completed.
+         * Updates RoundTextView after every roll
+         * @param view
+         */
         mRollButton = findViewById(R.id.rollButton);
         mRollButton.setOnClickListener(new View.OnClickListener() {
-            /**
-             * Checks mRolls number and either rolls the dices or calculates the points and
-             * moves to next round if all rols for this round is completed.
-             * Updates RoundTextView after every roll
-             * @param view
-             */
             @Override
             public void onClick(View view) {
                 if(mRolls <= 1) {
@@ -108,15 +109,14 @@ public class MainActivity extends AppCompatActivity {
         setRoundTextViewText();
         setAvailableGameOptions();
 
-
+        /**
+         * Makes the selected item in the spinner the chosen option
+         * @param adapterView
+         * @param view
+         * @param i
+         * @param l
+         */
         mGameOptionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            /**
-             * Makes the selected item in the spinner the chosen option
-             * @param adapterView
-             * @param view
-             * @param i
-             * @param l
-             */
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mGameOptionNr = i;
@@ -126,11 +126,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-
-            /**
-             * Does nothing
-             * @param adapterView
-             */
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
@@ -231,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Updates the spinner so it only displays the avalible gameoptions and not the ones that already has been choosen
+     * Updates the spinner so it only displays the available gameoptions and not the ones that already has been choosen
      */
     private void setAvailableGameOptions(){
         mAvailableGameOptions = new ArrayList<GameOption>();
@@ -249,16 +244,13 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Update the roundTextView to display correct round
      */
-
     private void setRoundTextViewText() {
-        mRoundTextView.setText(getString(R.string.RollText) + mRolls + getString(R.string.EndRollText));
+        mRoundTextView.setText(getString(R.string.RollText) + " " + mRolls + getString(R.string.EndRollText));
     }
-
 
     /**
      * Automatically calculate the points given in a round. Save the result in GameOptions
      */
-
     private void calculatePoints() {
         int sum = 0;
         int targetValue = mGameOptions[mGameOptionNr].getValue();
@@ -284,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
                     sum = sum + mDices[i].getValue();
                 }
             }
+
             // Check 2 dice
             for (int i = 0; i < mDices.length; i++) {
                 for (int j = i + 1; j < mDices.length; j++) {
@@ -316,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+
             // Check 4 dice
             for (int i = 0; i < mDices.length; i++) {
                 for (int j = i + 1; j < mDices.length; j++) {
@@ -336,8 +330,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
-            // Check 5 dice
 
+            // Check 5 dice
             for (int i = 0; i < mDices.length; i++) {
                 for (int j = i + 1; j < mDices.length; j++) {
                     for (int k = j + 1; k < mDices.length; k++) {
@@ -361,6 +355,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+
             // Check 6 dice
             int t = 0;
             for (int i = 0; i < mDices.length; i++) {
@@ -461,5 +456,4 @@ public class MainActivity extends AppCompatActivity {
         savedInstanceState.putInt(KEY_ROLLS, mRolls);
         savedInstanceState.putInt(KEY_GAME_OPTION_NR, mGameOptionNr);
     }
-
 }
