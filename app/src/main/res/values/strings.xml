@@ -7,4 +7,16 @@
     <string name="GameOptionText">GameOption </string>
     <string name="GaveYouText"> gave you </string>
     <string name="PointsText"> Points!</string>
+    <string name="Low">Low</string>
+    <string name="Four">4</string>
+    <string name="Five">5</string>
+    <string name="Six">6</string>
+    <string name="Seven">7</string>
+    <string name="Eight">8</string>
+    <string name="Nine">9</string>
+    <string name="Ten">10</string>
+    <string name="Eleven">11</string>
+    <string name="Twelve">12</string>
+
+
 </resources>

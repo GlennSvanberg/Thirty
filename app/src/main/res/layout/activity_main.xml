@@ -18,80 +18,80 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/die0"
+        android:id="@+id/dice0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
         android:background="@null"
-        android:onClick="dieClick"
+        android:onClick="diceClick"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/roundTextView"
         app:srcCompat="@drawable/white1" />
 
     <ImageButton
-        android:id="@+id/die1"
+        android:id="@+id/dice1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
         android:background="@null"
-        android:onClick="dieClick"
-        app:layout_constraintEnd_toStartOf="@+id/die2"
-        app:layout_constraintStart_toEndOf="@+id/die0"
+        android:onClick="diceClick"
+        app:layout_constraintEnd_toStartOf="@+id/dice2"
+        app:layout_constraintStart_toEndOf="@+id/dice0"
         app:layout_constraintTop_toBottomOf="@+id/roundTextView"
         app:srcCompat="@drawable/white1" />
 
     <ImageButton
-        android:id="@+id/die2"
+        android:id="@+id/dice2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
         android:background="@null"
-        android:onClick="dieClick"
+        android:onClick="diceClick"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/roundTextView"
         app:srcCompat="@drawable/white1" />
 
     <ImageButton
-        android:id="@+id/die3"
+        android:id="@+id/dice3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
         android:background="@null"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/die0"
+        app:layout_constraintTop_toBottomOf="@+id/dice0"
         app:srcCompat="@drawable/white1"
-        android:onClick="dieClick"/>
+        android:onClick="diceClick"/>
 
     <ImageButton
-        android:id="@+id/die4"
+        android:id="@+id/dice4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
         android:background="@null"
-        app:layout_constraintEnd_toStartOf="@+id/die5"
-        app:layout_constraintStart_toEndOf="@+id/die3"
-        app:layout_constraintTop_toBottomOf="@+id/die1"
+        app:layout_constraintEnd_toStartOf="@+id/dice5"
+        app:layout_constraintStart_toEndOf="@+id/dice3"
+        app:layout_constraintTop_toBottomOf="@+id/dice1"
         app:srcCompat="@drawable/white1"
-        android:onClick="dieClick"/>
+        android:onClick="diceClick"/>
 
     <ImageButton
-        android:id="@+id/die5"
+        android:id="@+id/dice5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="30dp"
         android:background="@null"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/die2"
+        app:layout_constraintTop_toBottomOf="@+id/dice2"
         app:srcCompat="@drawable/white1"
-        android:onClick="dieClick"/>
+        android:onClick="diceClick"/>
 
     <Button
         android:id="@+id/rollButton"

@@ -18,21 +18,20 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-
-    private static final String TAG = "DiceActivity";
-    private static final String KEY_DICE = "Dice";
+    
+    private static final String KEY_DICES = "Dices";
     private static final String KEY_ROLLS = "Rolls";
     private static final String KEY_GAME_OPTION_SUM = "GameOptionSum";
     private static final String KEY_GAME_OPTION_AVAILABLE = "GameOptionAvailable";
     private static final String KEY_GAME_OPTION_NR = "Options";
 
 
-    private ImageButton mDie0, mDie1, mDie2, mDie3, mDie4, mDie5;
+    private ImageButton mDice0, mDice1, mDice2, mDice3, mDice4, mDice5;
     private Button mRollButton;
     private TextView mRoundTextView;
     private Spinner mGameOptionsSpinner;
 
-    private Die[] mDice;
+    private Dice[] mDices;
     private GameOption[] mGameOptions;
     private ArrayList<GameOption> mAvailableGameOptions;
     private int mGameOptionNr;
@@ -47,42 +46,61 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mDie0 = findViewById(R.id.die0);
-        mDie1 = findViewById(R.id.die1);
-        mDie2 = findViewById(R.id.die2);
-        mDie3 = findViewById(R.id.die3);
-        mDie4 = findViewById(R.id.die4);
-        mDie5 = findViewById(R.id.die5);
+        mDice0 = findViewById(R.id.dice0);
+        mDice1 = findViewById(R.id.dice1);
+        mDice2 = findViewById(R.id.dice2);
+        mDice3 = findViewById(R.id.dice3);
+        mDice4 = findViewById(R.id.dice4);
+        mDice5 = findViewById(R.id.dice5);
 
-        mDice = new Die[] {
-                new Die(mDie0.getId()),
-                new Die(mDie1.getId()),
-                new Die(mDie2.getId()),
-                new Die(mDie3.getId()),
-                new Die(mDie4.getId()),
-                new Die(mDie5.getId())
+        mDices = new Dice[] {
+                new Dice(mDice0.getId()),
+                new Dice(mDice1.getId()),
+                new Dice(mDice2.getId()),
+                new Dice(mDice3.getId()),
+                new Dice(mDice4.getId()),
+                new Dice(mDice5.getId())
         };
 
         mGameOptions = new GameOption[] {
-                new GameOption("LOW", 0),
-                new GameOption("4" ,4),
-                new GameOption("5", 5),
-                new GameOption("6", 6),
-                new GameOption("7", 7),
-                new GameOption("8", 8),
-                new GameOption("9", 9),
-                new GameOption("10", 10),
-                new GameOption("11", 11),
-                new GameOption("12", 12)
+                new GameOption(getString(R.string.Low), 0),
+                new GameOption(getString(R.string.Four) ,4),
+                new GameOption(getString(R.string.Five), 5),
+                new GameOption(getString(R.string.Six), 6),
+                new GameOption(getString(R.string.Seven), 7),
+                new GameOption(getString(R.string.Eight), 8),
+                new GameOption(getString(R.string.Nine), 9),
+                new GameOption(getString(R.string.Ten), 10),
+                new GameOption(getString(R.string.Eleven), 11),
+                new GameOption(getString(R.string.Twelve), 12)
         };
 
         mRollButton = findViewById(R.id.rollButton);
         mRollButton.setOnClickListener(new View.OnClickListener() {
-
+            /**
+             * Checks mRolls number and either rolls the dices or calculates the points and
+             * moves to next round if all rols for this round is completed.
+             * Updates RoundTextView after every roll
+             * @param view
+             */
             @Override
             public void onClick(View view) {
-                //Roll dies
-                roll();
+                if(mRolls <= 1) {
+
+                    updateDice();
+                    mRolls++;
+                    setRoundTextViewText();
+
+                } else if (mRolls == 2) {
+                    updateDice();
+                    mRolls++;
+                    setRoundTextViewText();
+                    mRollButton.setText(getString(R.string.ChooseButtonText));
+                }else {
+                    calculatePoints();
+                    showScore();
+                    newRound();
+                }
             }
         });
 
@@ -92,6 +110,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         mGameOptionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            /**
+             * Makes the selected item in the spinner the chosen option
+             * @param adapterView
+             * @param view
+             * @param i
+             * @param l
+             */
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 mGameOptionNr = i;
@@ -101,6 +126,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+
+            /**
+             * Does nothing
+             * @param adapterView
+             */
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
             }
@@ -109,12 +139,12 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
 
             mRolls = savedInstanceState.getInt(KEY_ROLLS);
-            Die[] savedDice = (Die[]) savedInstanceState.getParcelableArray(KEY_DICE);
+            Dice[] savedDices = (Dice[]) savedInstanceState.getParcelableArray(KEY_DICES);
 
-            for(int i = 0; i < mDice.length; i++) {
-                mDice[i].setValue(savedDice[i].getValue());
-                mDice[i].setActive((savedDice[i].isActive()));
-                setDieImage(mDice[i]);
+            for(int i = 0; i < mDices.length; i++) {
+                mDices[i].setValue(savedDices[i].getValue());
+                mDices[i].setActive((savedDices[i].isActive()));
+                setDiceImage(mDices[i]);
             }
 
             int[] savedGameOptionsSum = savedInstanceState.getIntArray(KEY_GAME_OPTION_SUM);
@@ -125,12 +155,9 @@ public class MainActivity extends AppCompatActivity {
                 mGameOptions[i].setAvailable(savedGameOptionsIsAvialible[i] != 0);
             }
 
-
             mGameOptionNr = savedInstanceState.getInt(KEY_GAME_OPTION_NR);
-
             setRoundTextViewText();
             setAvailableGameOptions();
-
 
         } else {
             newRound();
@@ -139,39 +166,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Check how many rolls have been made and roll the dice and update text
-     */
-    private void roll() {
-        // Check if it is time to roll dice
-        if(mRolls <= 1) {
-
-            updateDice();
-            mRolls++;
-            setRoundTextViewText();
-
-        } else if (mRolls == 2) {
-            updateDice();
-            mRolls++;
-            setRoundTextViewText();
-            mRollButton.setText(getString(R.string.ChooseButtonText));
-        }else {
-            calculatePoints();
-            showScore();
-            newRound();
-        }
-    }
 
     /**
-     * Loop through all the dice and roll the active ones
+     * Loop through all the dice and roll the ones that has not been choosen to keep
      */
     public void updateDice() {
         // Loop all dice
-        for(Die die : mDice) {
-            // Check if die is active
-            if(die.isActive()) {
-                die.roll();
-                setDieImage(die);
+        for(Dice dice : mDices) {
+            // Check if Dice is active
+            if(dice.isActive()) {
+                dice.roll();
+                setDiceImage(dice);
             }
         }
     }
@@ -180,15 +185,15 @@ public class MainActivity extends AppCompatActivity {
      * Triggered by click on dice, activates and deactivates dice making them roll or not roll on next round
      * @param view
      */
-    public void dieClick(View view) {
-        for (Die die : mDice) {
-            if(die.getId() == view.getId()) {
-                if(die.isActive()) {
-                    die.setActive(false);
+    public void diceClick(View view) {
+        for (Dice dice : mDices) {
+            if(dice.getId() == view.getId()) {
+                if(dice.isActive()) {
+                    dice.setActive(false);
                 } else {
-                    die.setActive(true);
+                    dice.setActive(true);
                 }
-                setDieImage(die);
+                setDiceImage(dice);
             }
         }
     }
@@ -200,10 +205,10 @@ public class MainActivity extends AppCompatActivity {
 
         setAvailableGameOptions();
         if(mAvailableGameOptions.size() != 0) {
-            for (Die die : mDice) {
-                die.roll();
-                die.setActive(true);
-                setDieImage(die);
+            for (Dice dice : mDices) {
+                dice.roll();
+                dice.setActive(true);
+                setDiceImage(dice);
             }
             mRollButton.setText(getString(R.string.RollButtonText));
             mRolls = 1;
@@ -249,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
         mRoundTextView.setText(getString(R.string.RollText) + mRolls + getString(R.string.EndRollText));
     }
 
+
     /**
      * Automatically calculate the points given in a round. Save the result in GameOptions
      */
@@ -257,73 +263,73 @@ public class MainActivity extends AppCompatActivity {
         int sum = 0;
         int targetValue = mGameOptions[mGameOptionNr].getValue();
 
-        for(int i = 0;  mDice.length > i; i++) {
+        for(int i = 0;  mDices.length > i; i++) {
             // Reset dices count
-            mDice[i].setCounted(false);
+            mDices[i].setCounted(false);
         }
 
         // Calculate LOW
         if(mGameOptionNr == 0) {
-            for(int i =0; i < mDice.length; i++) {
-                if(mDice[i].getValue() <= 3) {
+            for(int i =0; i < mDices.length; i++) {
+                if(mDices[i].getValue() <= 3) {
                     sum += i;
                 }
             }
         } else {
 
-            //Check one die
-            for (int i = 0; i < mDice.length; i++) {
-                if (mDice[i].getValue() == targetValue) {
-                    mDice[i].setCounted(true);
-                    sum = sum + mDice[i].getValue();
+            //Check one dice
+            for (int i = 0; i < mDices.length; i++) {
+                if (mDices[i].getValue() == targetValue) {
+                    mDices[i].setCounted(true);
+                    sum = sum + mDices[i].getValue();
                 }
             }
             // Check 2 dice
-            for (int i = 0; i < mDice.length; i++) {
-                for (int j = i + 1; j < mDice.length; j++) {
+            for (int i = 0; i < mDices.length; i++) {
+                for (int j = i + 1; j < mDices.length; j++) {
                     //check counted
-                    if (!mDice[i].isCounted() && !mDice[j].isCounted()) {
+                    if (!mDices[i].isCounted() && !mDices[j].isCounted()) {
                         //compare
-                        if (mDice[i].getValue() + mDice[j].getValue() == targetValue) {
-                            mDice[i].setCounted(true);
-                            mDice[j].setCounted(true);
-                            sum = sum + mDice[i].getValue() + mDice[j].getValue();
+                        if (mDices[i].getValue() + mDices[j].getValue() == targetValue) {
+                            mDices[i].setCounted(true);
+                            mDices[j].setCounted(true);
+                            sum = sum + mDices[i].getValue() + mDices[j].getValue();
                         }
                     }
                 }
             }
 
             // Check 3 dice
-            for (int i = 0; i < mDice.length; i++) {
-                for (int j = i + 1; j < mDice.length; j++) {
-                    for (int k = j + 1; k < mDice.length; k++) {
+            for (int i = 0; i < mDices.length; i++) {
+                for (int j = i + 1; j < mDices.length; j++) {
+                    for (int k = j + 1; k < mDices.length; k++) {
                         // check counted
-                        if (!mDice[i].isCounted() && !mDice[j].isCounted() && !mDice[k].isCounted()) {
+                        if (!mDices[i].isCounted() && !mDices[j].isCounted() && !mDices[k].isCounted()) {
                             // Compare
-                            if (mDice[i].getValue() + mDice[j].getValue() + mDice[k].getValue() == targetValue) {
-                                mDice[i].setCounted(true);
-                                mDice[j].setCounted(true);
-                                mDice[k].setCounted(true);
-                                sum = sum + mDice[i].getValue() + mDice[j].getValue() + mDice[k].getValue();
+                            if (mDices[i].getValue() + mDices[j].getValue() + mDices[k].getValue() == targetValue) {
+                                mDices[i].setCounted(true);
+                                mDices[j].setCounted(true);
+                                mDices[k].setCounted(true);
+                                sum = sum + mDices[i].getValue() + mDices[j].getValue() + mDices[k].getValue();
                             }
                         }
                     }
                 }
             }
             // Check 4 dice
-            for (int i = 0; i < mDice.length; i++) {
-                for (int j = i + 1; j < mDice.length; j++) {
-                    for (int k = j + 1; k < mDice.length; k++) {
-                        for (int l = k + 1; l < mDice.length; l++) {
+            for (int i = 0; i < mDices.length; i++) {
+                for (int j = i + 1; j < mDices.length; j++) {
+                    for (int k = j + 1; k < mDices.length; k++) {
+                        for (int l = k + 1; l < mDices.length; l++) {
                             // check counted
-                            if (!mDice[i].isCounted() && !mDice[j].isCounted() && !mDice[k].isCounted() && !mDice[l].isCounted()) {
+                            if (!mDices[i].isCounted() && !mDices[j].isCounted() && !mDices[k].isCounted() && !mDices[l].isCounted()) {
                                 //Compare
-                                if (mDice[i].getValue() + mDice[j].getValue() + mDice[k].getValue() + mDice[l].getValue() == targetValue) {
-                                    mDice[i].setCounted(true);
-                                    mDice[j].setCounted(true);
-                                    mDice[k].setCounted(true);
-                                    mDice[l].setCounted(true);
-                                    sum = sum + mDice[i].getValue() + mDice[j].getValue() + mDice[k].getValue() + mDice[l].getValue();
+                                if (mDices[i].getValue() + mDices[j].getValue() + mDices[k].getValue() + mDices[l].getValue() == targetValue) {
+                                    mDices[i].setCounted(true);
+                                    mDices[j].setCounted(true);
+                                    mDices[k].setCounted(true);
+                                    mDices[l].setCounted(true);
+                                    sum = sum + mDices[i].getValue() + mDices[j].getValue() + mDices[k].getValue() + mDices[l].getValue();
                                 }
                             }
                         }
@@ -332,21 +338,21 @@ public class MainActivity extends AppCompatActivity {
             }
             // Check 5 dice
 
-            for (int i = 0; i < mDice.length; i++) {
-                for (int j = i + 1; j < mDice.length; j++) {
-                    for (int k = j + 1; k < mDice.length; k++) {
-                        for (int l = k + 1; l < mDice.length; l++) {
-                            for (int m = l + 1; m < mDice.length; m++) {
+            for (int i = 0; i < mDices.length; i++) {
+                for (int j = i + 1; j < mDices.length; j++) {
+                    for (int k = j + 1; k < mDices.length; k++) {
+                        for (int l = k + 1; l < mDices.length; l++) {
+                            for (int m = l + 1; m < mDices.length; m++) {
                                 // Check counted
-                                if (!mDice[i].isCounted() && !mDice[j].isCounted() && !mDice[k].isCounted() && !mDice[l].isCounted() && !mDice[m].isCounted()) {
+                                if (!mDices[i].isCounted() && !mDices[j].isCounted() && !mDices[k].isCounted() && !mDices[l].isCounted() && !mDices[m].isCounted()) {
                                     // Compare
-                                    if (mDice[i].getValue() + mDice[j].getValue() + mDice[k].getValue() + mDice[l].getValue() + mDice[m].getValue() == targetValue) {
-                                        mDice[i].setCounted(true);
-                                        mDice[j].setCounted(true);
-                                        mDice[k].setCounted(true);
-                                        mDice[l].setCounted(true);
-                                        mDice[m].setCounted(true);
-                                        sum = sum + mDice[i].getValue() + mDice[j].getValue() + mDice[k].getValue() + mDice[l].getValue() + mDice[m].getValue();
+                                    if (mDices[i].getValue() + mDices[j].getValue() + mDices[k].getValue() + mDices[l].getValue() + mDices[m].getValue() == targetValue) {
+                                        mDices[i].setCounted(true);
+                                        mDices[j].setCounted(true);
+                                        mDices[k].setCounted(true);
+                                        mDices[l].setCounted(true);
+                                        mDices[m].setCounted(true);
+                                        sum = sum + mDices[i].getValue() + mDices[j].getValue() + mDices[k].getValue() + mDices[l].getValue() + mDices[m].getValue();
                                     }
                                 }
 
@@ -357,9 +363,9 @@ public class MainActivity extends AppCompatActivity {
             }
             // Check 6 dice
             int t = 0;
-            for (int i = 0; i < mDice.length; i++) {
-                if (!mDice[i].isCounted()) {
-                    t = t + mDice[i].getValue();
+            for (int i = 0; i < mDices.length; i++) {
+                if (!mDices[i].isCounted()) {
+                    t = t + mDices[i].getValue();
                 }
             }
             if (t == targetValue) {
@@ -380,16 +386,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Update the image of a die to display correct value and color
-     * Display grey if die is choosen and white if it is active and shall be rolled
+     * Update the image of a dice to display correct value and color
+     * Display grey if dice is choosen and white if it is active and shall be rolled
      *
-     * @param die
+     * @param dice
      */
-    private void setDieImage(Die die) {
-        ImageButton button = findViewById(die.getId());
-        if(die.isActive()) {
+    private void setDiceImage(Dice dice) {
+        ImageButton button = findViewById(dice.getId());
+        if(dice.isActive()) {
             //set white image
-            switch(die.getValue()) {
+            switch(dice.getValue()) {
                 case 1:
                     button.setImageResource(R.drawable.white1);
                     break;
@@ -411,7 +417,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             //set grey image
-            switch(die.getValue()) {
+            switch(dice.getValue()) {
                 case 1:
                     button.setImageResource(R.drawable.grey1);
                     break;
@@ -450,7 +456,7 @@ public class MainActivity extends AppCompatActivity {
         savedInstanceState.putIntArray(KEY_GAME_OPTION_SUM, gameOptionSum);
         savedInstanceState.putByteArray(KEY_GAME_OPTION_AVAILABLE, gameOptionAvailable);
 
-        savedInstanceState.putParcelableArray(KEY_DICE, mDice);
+        savedInstanceState.putParcelableArray(KEY_DICES, mDices);
 
         savedInstanceState.putInt(KEY_ROLLS, mRolls);
         savedInstanceState.putInt(KEY_GAME_OPTION_NR, mGameOptionNr);
