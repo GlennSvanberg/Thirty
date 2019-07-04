@@ -25,7 +25,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String KEY_GAME_OPTION_AVAILABLE = "GameOptionAvailable";
     private static final String KEY_GAME_OPTION_NR = "Options";
 
-
     private ImageButton mDice0, mDice1, mDice2, mDice3, mDice4, mDice5;
     private Button mRollButton;
     private TextView mRoundTextView;

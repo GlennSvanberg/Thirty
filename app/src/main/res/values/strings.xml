@@ -4,10 +4,10 @@
     <string name="ChooseButtonText">CHOOSE</string>
     <string name="RollText">Roll </string>
     <string name="EndRollText"> / 3 </string>
-    <string name="GameOptionText">GameOption </string>
+    <string name="GameOptionText">Option </string>
     <string name="GaveYouText"> gave you </string>
     <string name="PointsText"> Points!</string>
-    <string name="Low">Low</string>
+    <string name="Low">low</string>
     <string name="Four">4</string>
     <string name="Five">5</string>
     <string name="Six">6</string>
@@ -17,6 +17,4 @@
     <string name="Ten">10</string>
     <string name="Eleven">11</string>
     <string name="Twelve">12</string>
-
-
 </resources>
