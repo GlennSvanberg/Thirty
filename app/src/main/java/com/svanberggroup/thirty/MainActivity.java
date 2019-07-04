@@ -38,8 +38,10 @@ public class MainActivity extends AppCompatActivity {
     private int mGameOptionNr;
     private int mRolls;
 
-
-
+    /**
+     * Creates the view
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         mRollButton = findViewById(R.id.rollButton);
         mRollButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 //Roll dies
@@ -136,6 +139,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Check how many rolls have been made and roll the dice and update text
+     */
     private void roll() {
         // Check if it is time to roll dice
         if(mRolls <= 1) {
@@ -155,6 +161,10 @@ public class MainActivity extends AppCompatActivity {
             newRound();
         }
     }
+
+    /**
+     * Loop through all the dice and roll the active ones
+     */
     public void updateDice() {
         // Loop all dice
         for(Die die : mDice) {
@@ -165,6 +175,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Triggered by click on dice, activates and deactivates dice making them roll or not roll on next round
+     * @param view
+     */
     public void dieClick(View view) {
         for (Die die : mDice) {
             if(die.getId() == view.getId()) {
@@ -178,6 +193,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Reset dices and mRolls count
+     */
     private void newRound() {
 
         setAvailableGameOptions();
@@ -195,6 +213,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * End of game show ResultActivity and send result as an intent
+     */
     private void showResult() {
         int[] sums = new int[10];
         for (int i = 0; i < mGameOptions.length; i++) {
@@ -204,6 +225,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Updates the spinner so it only displays the avalible gameoptions and not the ones that already has been choosen
+     */
     private void setAvailableGameOptions(){
         mAvailableGameOptions = new ArrayList<GameOption>();
         for(GameOption o : mGameOptions) {
@@ -217,9 +241,17 @@ public class MainActivity extends AppCompatActivity {
         mGameOptionsSpinner.setAdapter(dataAdapter);
     }
 
+    /**
+     * Update the roundTextView to display correct round
+     */
+
     private void setRoundTextViewText() {
         mRoundTextView.setText(getString(R.string.RollText) + mRolls + getString(R.string.EndRollText));
     }
+
+    /**
+     * Automatically calculate the points given in a round. Save the result in GameOptions
+     */
 
     private void calculatePoints() {
         int sum = 0;
@@ -339,11 +371,20 @@ public class MainActivity extends AppCompatActivity {
             mGameOptions[mGameOptionNr].setSum(sum);
         }
 
-        private void showScore() {
-            Toast toast = Toast.makeText(this, getString(R.string.GameOptionText) + " " + mGameOptions[mGameOptionNr].getName()  + " " + getString(R.string.GaveYouText) + " " + mGameOptions[mGameOptionNr].getSum() +  " " + getString(R.string.PointsText), Toast.LENGTH_SHORT);
-            toast.show();
-        }
+    /**
+     * Display a toast with the score given for the previous round
+     */
+    private void showScore() {
+        Toast toast = Toast.makeText(this, getString(R.string.GameOptionText) + " " + mGameOptions[mGameOptionNr].getName()  + " " + getString(R.string.GaveYouText) + " " + mGameOptions[mGameOptionNr].getSum() +  " " + getString(R.string.PointsText), Toast.LENGTH_SHORT);
+        toast.show();
+    }
 
+    /**
+     * Update the image of a die to display correct value and color
+     * Display grey if die is choosen and white if it is active and shall be rolled
+     *
+     * @param die
+     */
     private void setDieImage(Die die) {
         ImageButton button = findViewById(die.getId());
         if(die.isActive()) {
@@ -392,6 +433,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Stores the state of the game
+     * @param savedInstanceState
+     */
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);

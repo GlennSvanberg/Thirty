@@ -20,22 +20,28 @@ public class ResultActivity extends AppCompatActivity {
     private Button mPlayAgainButton;
     private int[] mValues;
 
+    /**
+     * Method to create a intent with the reuslt to display in this activity
+     * @param packageContext
+     * @param result
+     * @return
+     */
     public static Intent newIntent(Context packageContext, int[] result) {
         Intent intent = new Intent(packageContext, ResultActivity.class);
         intent.putExtra(EXTRA_RESULT, result);
         return intent;
     }
 
+    /**
+     * Creates the Result View and reads the result as a intent
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
         mValues = getIntent().getIntArrayExtra(EXTRA_RESULT);
-        Log.d(TAG, "Result");
-        for (int i : mValues) {
-            Log.d(TAG, "val: " + i);
-        }
 
         mTextViewLow = findViewById(R.id.resultTextViewLow);
         mTextViewLow.setText(String.valueOf(mValues[0]));
@@ -69,6 +75,10 @@ public class ResultActivity extends AppCompatActivity {
 
         mPlayAgainButton = findViewById(R.id.playAgainButton);
         mPlayAgainButton.setOnClickListener(new View.OnClickListener() {
+            /**
+             * Sends user back to MainActivity and starts a new game
+             * @param view
+             */
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ResultActivity.this, MainActivity.class);
