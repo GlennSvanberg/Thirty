@@ -97,7 +97,9 @@ public class MainActivity extends AppCompatActivity {
                     setRoundTextViewText();
                     mRollButton.setText(getString(R.string.ChooseButtonText));
                 }else {
-                    calculatePoints();
+
+                    //calculatePoints();
+                    mGameOptions[mGameOptionNr].calculatePoints(mDices);
                     showScore();
                     newRound();
                 }
@@ -246,130 +248,6 @@ public class MainActivity extends AppCompatActivity {
     private void setRoundTextViewText() {
         mRoundTextView.setText(getString(R.string.RollText) + " " + mRolls + getString(R.string.EndRollText));
     }
-
-    /**
-     * Automatically calculate the points given in a round. Save the result in GameOptions
-     */
-    private void calculatePoints() {
-        int sum = 0;
-        int targetValue = mGameOptions[mGameOptionNr].getValue();
-
-        for(int i = 0;  mDices.length > i; i++) {
-            // Reset dices count
-            mDices[i].setCounted(false);
-        }
-
-        // Calculate LOW
-        if(mGameOptionNr == 0) {
-            for(int i =0; i < mDices.length; i++) {
-                if(mDices[i].getValue() <= 3) {
-                    sum += i;
-                }
-            }
-        } else {
-
-            //Check one dice
-            for (int i = 0; i < mDices.length; i++) {
-                if (mDices[i].getValue() == targetValue) {
-                    mDices[i].setCounted(true);
-                    sum = sum + mDices[i].getValue();
-                }
-            }
-
-            // Check 2 dice
-            for (int i = 0; i < mDices.length; i++) {
-                for (int j = i + 1; j < mDices.length; j++) {
-                    //check counted
-                    if (!mDices[i].isCounted() && !mDices[j].isCounted()) {
-                        //compare
-                        if (mDices[i].getValue() + mDices[j].getValue() == targetValue) {
-                            mDices[i].setCounted(true);
-                            mDices[j].setCounted(true);
-                            sum = sum + mDices[i].getValue() + mDices[j].getValue();
-                        }
-                    }
-                }
-            }
-
-            // Check 3 dice
-            for (int i = 0; i < mDices.length; i++) {
-                for (int j = i + 1; j < mDices.length; j++) {
-                    for (int k = j + 1; k < mDices.length; k++) {
-                        // check counted
-                        if (!mDices[i].isCounted() && !mDices[j].isCounted() && !mDices[k].isCounted()) {
-                            // Compare
-                            if (mDices[i].getValue() + mDices[j].getValue() + mDices[k].getValue() == targetValue) {
-                                mDices[i].setCounted(true);
-                                mDices[j].setCounted(true);
-                                mDices[k].setCounted(true);
-                                sum = sum + mDices[i].getValue() + mDices[j].getValue() + mDices[k].getValue();
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Check 4 dice
-            for (int i = 0; i < mDices.length; i++) {
-                for (int j = i + 1; j < mDices.length; j++) {
-                    for (int k = j + 1; k < mDices.length; k++) {
-                        for (int l = k + 1; l < mDices.length; l++) {
-                            // check counted
-                            if (!mDices[i].isCounted() && !mDices[j].isCounted() && !mDices[k].isCounted() && !mDices[l].isCounted()) {
-                                //Compare
-                                if (mDices[i].getValue() + mDices[j].getValue() + mDices[k].getValue() + mDices[l].getValue() == targetValue) {
-                                    mDices[i].setCounted(true);
-                                    mDices[j].setCounted(true);
-                                    mDices[k].setCounted(true);
-                                    mDices[l].setCounted(true);
-                                    sum = sum + mDices[i].getValue() + mDices[j].getValue() + mDices[k].getValue() + mDices[l].getValue();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Check 5 dice
-            for (int i = 0; i < mDices.length; i++) {
-                for (int j = i + 1; j < mDices.length; j++) {
-                    for (int k = j + 1; k < mDices.length; k++) {
-                        for (int l = k + 1; l < mDices.length; l++) {
-                            for (int m = l + 1; m < mDices.length; m++) {
-                                // Check counted
-                                if (!mDices[i].isCounted() && !mDices[j].isCounted() && !mDices[k].isCounted() && !mDices[l].isCounted() && !mDices[m].isCounted()) {
-                                    // Compare
-                                    if (mDices[i].getValue() + mDices[j].getValue() + mDices[k].getValue() + mDices[l].getValue() + mDices[m].getValue() == targetValue) {
-                                        mDices[i].setCounted(true);
-                                        mDices[j].setCounted(true);
-                                        mDices[k].setCounted(true);
-                                        mDices[l].setCounted(true);
-                                        mDices[m].setCounted(true);
-                                        sum = sum + mDices[i].getValue() + mDices[j].getValue() + mDices[k].getValue() + mDices[l].getValue() + mDices[m].getValue();
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Check 6 dice
-            int t = 0;
-            for (int i = 0; i < mDices.length; i++) {
-                if (!mDices[i].isCounted()) {
-                    t = t + mDices[i].getValue();
-                }
-            }
-            if (t == targetValue) {
-                sum = t;
-            }
-        }
-
-            mGameOptions[mGameOptionNr].setAvailable(false);
-            mGameOptions[mGameOptionNr].setSum(sum);
-        }
 
     /**
      * Display a toast with the score given for the previous round
