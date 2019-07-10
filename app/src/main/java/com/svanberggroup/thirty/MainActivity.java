@@ -45,6 +45,96 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initGame();
+
+        mRollButton = findViewById(R.id.rollButton);
+        mRollButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateRolls();
+            }
+        });
+
+        mGameOptionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mGameOptionNr = i;
+                for (int j = 0; j < mGameOptions.length; j++) {
+                    if(mAvailableGameOptions.get(i).getName() == mGameOptions[j].getName()) {
+                        mGameOptionNr = j;
+                    }
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+
+        if (savedInstanceState != null) {
+            getSavedInstance(savedInstanceState);
+
+        } else {
+            newRound();
+            setRoundTextViewText();
+
+        }
+    }
+
+    /**
+     * Gets the saved instace and sets the game back to previous state
+     * @param savedInstanceState
+     */
+    private void getSavedInstance(Bundle savedInstanceState) {
+        mRolls = savedInstanceState.getInt(KEY_ROLLS);
+        Dice[] savedDices = (Dice[]) savedInstanceState.getParcelableArray(KEY_DICES);
+
+        for(int i = 0; i < mDices.length; i++) {
+            mDices[i].setValue(savedDices[i].getValue());
+            mDices[i].setActive((savedDices[i].isActive()));
+            setDiceImage(mDices[i]);
+        }
+
+        int[] savedGameOptionsSum = savedInstanceState.getIntArray(KEY_GAME_OPTION_SUM);
+        byte[] savedGameOptionsIsAvialible = savedInstanceState.getByteArray(KEY_GAME_OPTION_AVAILABLE);
+
+        for(int i = 0; i < mGameOptions.length; i++) {
+            mGameOptions[i].setSum(savedGameOptionsSum[i]);
+            mGameOptions[i].setAvailable(savedGameOptionsIsAvialible[i] != 0);
+        }
+
+        mGameOptionNr = savedInstanceState.getInt(KEY_GAME_OPTION_NR);
+        setRoundTextViewText();
+        setAvailableGameOptions();
+    }
+    /**
+     * Checks mRolls number and either rolls the dices or calculates the points and
+     * moves to next round if all rols for this round is completed.
+     * Updates RoundTextView after every roll
+     */
+    private void updateRolls() {
+        if(mRolls <= 1) {
+
+            updateDice();
+            mRolls++;
+            setRoundTextViewText();
+
+        } else if (mRolls == 2) {
+            updateDice();
+            mRolls++;
+            setRoundTextViewText();
+            mRollButton.setText(getString(R.string.ChooseButtonText));
+        }else {
+
+            //calculatePoints();
+            mGameOptions[mGameOptionNr].calculatePoints(mDices);
+            showScore();
+            newRound();
+        }
+    }
+    /**
+     * init buttons and creates new dices and gameoptions
+     */
+    private void initGame() {
         mDice0 = findViewById(R.id.dice0);
         mDice1 = findViewById(R.id.dice1);
         mDice2 = findViewById(R.id.dice2);
@@ -74,94 +164,10 @@ public class MainActivity extends AppCompatActivity {
                 new GameOption(getString(R.string.Twelve), 12)
         };
 
-
-        /**
-         * Checks mRolls number and either rolls the dices or calculates the points and
-         * moves to next round if all rols for this round is completed.
-         * Updates RoundTextView after every roll
-         * @param view
-         */
-        mRollButton = findViewById(R.id.rollButton);
-        mRollButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mRolls <= 1) {
-
-                    updateDice();
-                    mRolls++;
-                    setRoundTextViewText();
-
-                } else if (mRolls == 2) {
-                    updateDice();
-                    mRolls++;
-                    setRoundTextViewText();
-                    mRollButton.setText(getString(R.string.ChooseButtonText));
-                }else {
-
-                    //calculatePoints();
-                    mGameOptions[mGameOptionNr].calculatePoints(mDices);
-                    showScore();
-                    newRound();
-                }
-            }
-        });
-
         mRoundTextView = findViewById(R.id.roundTextView);
         setRoundTextViewText();
         setAvailableGameOptions();
-
-        /**
-         * Makes the selected item in the spinner the chosen option
-         * @param adapterView
-         * @param view
-         * @param i
-         * @param l
-         */
-        mGameOptionsSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mGameOptionNr = i;
-                for (int j = 0; j < mGameOptions.length; j++) {
-                    if(mAvailableGameOptions.get(i).getName() == mGameOptions[j].getName()) {
-                        mGameOptionNr = j;
-                    }
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
-
-        if (savedInstanceState != null) {
-
-            mRolls = savedInstanceState.getInt(KEY_ROLLS);
-            Dice[] savedDices = (Dice[]) savedInstanceState.getParcelableArray(KEY_DICES);
-
-            for(int i = 0; i < mDices.length; i++) {
-                mDices[i].setValue(savedDices[i].getValue());
-                mDices[i].setActive((savedDices[i].isActive()));
-                setDiceImage(mDices[i]);
-            }
-
-            int[] savedGameOptionsSum = savedInstanceState.getIntArray(KEY_GAME_OPTION_SUM);
-            byte[] savedGameOptionsIsAvialible = savedInstanceState.getByteArray(KEY_GAME_OPTION_AVAILABLE);
-
-            for(int i = 0; i < mGameOptions.length; i++) {
-                mGameOptions[i].setSum(savedGameOptionsSum[i]);
-                mGameOptions[i].setAvailable(savedGameOptionsIsAvialible[i] != 0);
-            }
-
-            mGameOptionNr = savedInstanceState.getInt(KEY_GAME_OPTION_NR);
-            setRoundTextViewText();
-            setAvailableGameOptions();
-
-        } else {
-            newRound();
-            setRoundTextViewText();
-
-        }
     }
-
 
     /**
      * Loop through all the dice and roll the ones that has not been choosen to keep
@@ -257,6 +263,64 @@ public class MainActivity extends AppCompatActivity {
         toast.show();
     }
 
+
+
+    /**
+     * Sets a white image on the imageButton based on the dice value that gets passed
+     * @param dice
+     * @param button
+     */
+    private void setWhiteDiceImage(Dice dice, ImageButton button) {
+        switch(dice.getValue()) {
+            case 1:
+                button.setImageResource(R.drawable.white1);
+                break;
+            case 2:
+                button.setImageResource(R.drawable.white2);
+                break;
+            case 3:
+                button.setImageResource(R.drawable.white3);
+                break;
+            case 4:
+                button.setImageResource(R.drawable.white4);
+                break;
+            case 5:
+                button.setImageResource(R.drawable.white5);
+                break;
+            case 6:
+                button.setImageResource(R.drawable.white6);
+                break;
+        }
+    }
+
+    /**
+     * Sets a grey image on the imageButton based on the dice value that gets passed
+     * @param dice
+     * @param button
+     */
+    private void setGreyDiceImage(Dice dice, ImageButton button) {
+        switch(dice.getValue()) {
+            case 1:
+                button.setImageResource(R.drawable.grey1);
+                break;
+            case 2:
+                button.setImageResource(R.drawable.grey2);
+                break;
+            case 3:
+                button.setImageResource(R.drawable.grey3);
+                break;
+            case 4:
+                button.setImageResource(R.drawable.grey4);
+                break;
+            case 5:
+                button.setImageResource(R.drawable.grey5);
+                break;
+            case 6:
+                button.setImageResource(R.drawable.grey6);
+                break;
+        }
+    }
+
     /**
      * Update the image of a dice to display correct value and color
      * Display grey if dice is choosen and white if it is active and shall be rolled
@@ -264,51 +328,13 @@ public class MainActivity extends AppCompatActivity {
      * @param dice
      */
     private void setDiceImage(Dice dice) {
+
         ImageButton button = findViewById(dice.getId());
         if(dice.isActive()) {
-            //set white image
-            switch(dice.getValue()) {
-                case 1:
-                    button.setImageResource(R.drawable.white1);
-                    break;
-                case 2:
-                    button.setImageResource(R.drawable.white2);
-                    break;
-                case 3:
-                    button.setImageResource(R.drawable.white3);
-                    break;
-                case 4:
-                    button.setImageResource(R.drawable.white4);
-                    break;
-                case 5:
-                    button.setImageResource(R.drawable.white5);
-                    break;
-                case 6:
-                    button.setImageResource(R.drawable.white6);
-                    break;
-            }
+            setWhiteDiceImage(dice, button);
         } else {
-            //set grey image
-            switch(dice.getValue()) {
-                case 1:
-                    button.setImageResource(R.drawable.grey1);
-                    break;
-                case 2:
-                    button.setImageResource(R.drawable.grey2);
-                    break;
-                case 3:
-                    button.setImageResource(R.drawable.grey3);
-                    break;
-                case 4:
-                    button.setImageResource(R.drawable.grey4);
-                    break;
-                case 5:
-                    button.setImageResource(R.drawable.grey5);
-                    break;
-                case 6:
-                    button.setImageResource(R.drawable.grey6);
-                    break;
-            }
+            setGreyDiceImage(dice, button);
+
         }
     }
 
