@@ -76,6 +76,11 @@ public class GameOption{
         return mName;
     }
 
+    /**
+     * Calulate the sum of the dices if the choosen option is low
+     * @param mDices
+     * @return
+     */
     private int calculateLow(Dice[] mDices) {
         int sum = 0;
         for(int i =0; i < mDices.length; i++) {
@@ -86,6 +91,11 @@ public class GameOption{
         return sum;
     }
 
+    /**
+     * Caluclate sum of the dices that reaches the selected value on one single dice
+     * @param mDices
+     * @return
+     */
     private int calculateOneDice(Dice[]mDices) {
         int sum = 0;
         for (int i = 0; i < mDices.length; i++) {
@@ -96,6 +106,12 @@ public class GameOption{
         }
         return sum;
     }
+
+    /**
+     * Caluclate sum of the dices that reaches the selected value on one two dices
+     * @param mDices
+     * @return
+     */
     private int calculateTwoDices(Dice[]mDices) {
         int sum = 0;
         for (int i = 0; i < mDices.length; i++) {
@@ -113,6 +129,12 @@ public class GameOption{
         }
         return sum;
     }
+
+    /**
+     * Caluclate sum of the dices that reaches the selected value on three dices
+     * @param mDices
+     * @return
+     */
     private int calculateThreeDices(Dice[]mDices) {
         int sum = 0;
         for (int i = 0; i < mDices.length; i++) {
@@ -133,6 +155,12 @@ public class GameOption{
         }
         return sum;
     }
+
+    /**
+     * Caluclate sum of the dices that reaches the selected value on four dices
+     * @param mDices
+     * @return
+     */
     private int calculateFourDices(Dice[]mDices) {
         int sum = 0;
         for (int i = 0; i < mDices.length; i++) {
@@ -156,6 +184,12 @@ public class GameOption{
         }
         return sum;
     }
+
+    /**
+     * Caluclate sum of the dices that reaches the selected value on five dices
+     * @param mDices
+     * @return
+     */
     private int calculateFiveDices(Dice[]mDices) {
         int sum = 0;
         for (int i = 0; i < mDices.length; i++) {
@@ -183,6 +217,12 @@ public class GameOption{
         }
         return sum;
     }
+
+    /**
+     * Caluclate sum of the dices that reaches the selected value on six dices
+     * @param mDices
+     * @return
+     */
     private int calculateSixDices(Dice[]mDices) {
         int sum = 0;
         int t = 0;
@@ -196,6 +236,12 @@ public class GameOption{
         }
         return sum;
     }
+
+    /**
+     * returns the number of dices that has not been counted yet
+     * @param mDices
+     * @return
+     */
     private int avaliableDices(Dice[] mDices) {
         int count = 0;
         for (Dice dice : mDices) {
@@ -206,6 +252,10 @@ public class GameOption{
         return count;
     }
 
+    /**
+     * Caluclates the sum of the dices passed in on the value that is set for this GameOption
+     * @param mDices
+     */
     public void calculatePoints(Dice[] mDices) {
 
         int sum = 0;
@@ -236,6 +286,7 @@ public class GameOption{
         }
        mIsAvailable = false;
        mSum = sum;
+
     }
 
 
